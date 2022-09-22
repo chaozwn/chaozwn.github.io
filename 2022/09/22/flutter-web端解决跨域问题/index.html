@@ -6,24 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com/child">
-  <title>Mac初始化flutter开发环境 | jayce的博客</title>
+  <title>flutter web端解决跨域问题 | jayce的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Mac初始化Flutter开发环境1.安装Flutter sdkFlutter Sdk: https:&#x2F;&#x2F;docs.flutter.dev&#x2F;get-started&#x2F;install 下载解压之后: 12cd ~&#x2F;developmentunzip ~&#x2F;Downloads&#x2F;flutter_macos_3.3.2-stable.zip  添加flutter到环境变量 1export PATH&#x3D;&quot;">
+  <meta name="description" content="Flutter Web端解决跨域问题1.当我们开发的flutter程序在ios和安卓上都运行正常时，开启web端测试。结果:  从图上我们观察到了跨域错误。 解决方法：1.引入代理包 12345678910111213dependencies:  flutter:    sdk: flutter  # The following adds the Cupertino Icons font to y">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mac初始化flutter开发环境">
-<meta property="og:url" content="http://yoursite.com/child/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:title" content="flutter web端解决跨域问题">
+<meta property="og:url" content="http://yoursite.com/child/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="jayce的博客">
-<meta property="og:description" content="Mac初始化Flutter开发环境1.安装Flutter sdkFlutter Sdk: https:&#x2F;&#x2F;docs.flutter.dev&#x2F;get-started&#x2F;install 下载解压之后: 12cd ~&#x2F;developmentunzip ~&#x2F;Downloads&#x2F;flutter_macos_3.3.2-stable.zip  添加flutter到环境变量 1export PATH&#x3D;&quot;">
+<meta property="og:description" content="Flutter Web端解决跨域问题1.当我们开发的flutter程序在ios和安卓上都运行正常时，开启web端测试。结果:  从图上我们观察到了跨域错误。 解决方法：1.引入代理包 12345678910111213dependencies:  flutter:    sdk: flutter  # The following adds the Cupertino Icons font to y">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://yoursite.com/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/image-20220916151555043.png">
-<meta property="og:image" content="http://yoursite.com/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/image-20220916192244413.png">
-<meta property="article:published_time" content="2022-09-16T07:13:31.000Z">
-<meta property="article:modified_time" content="2022-09-16T11:22:54.738Z">
+<meta property="og:image" content="http://yoursite.com/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/image-20220922204508015.png">
+<meta property="article:published_time" content="2022-09-22T12:42:19.000Z">
+<meta property="article:modified_time" content="2022-09-22T16:09:37.146Z">
 <meta property="article:author" content="Jayce Zhao">
 <meta property="article:tag" content="前端">
 <meta property="article:tag" content="跨端">
+<meta property="article:tag" content="flutter">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/image-20220916151555043.png">
+<meta name="twitter:image" content="http://yoursite.com/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/image-20220922204508015.png">
   
     <link rel="alternative" href="/atom.xml" title="jayce的博客" type="application/atom+xml">
   
@@ -151,43 +151,37 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Mac初始化flutter开发环境" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-flutter-web端解决跨域问题" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Mac初始化flutter开发环境
+      flutter web端解决跨域问题
     </h1>
   
 
         
-        <a href="/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="archive-article-date">
-  	<time datetime="2022-09-16T07:13:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-16</time>
+        <a href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" class="archive-article-date">
+  	<time datetime="2022-09-22T12:42:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Mac初始化Flutter开发环境"><a href="#Mac初始化Flutter开发环境" class="headerlink" title="Mac初始化Flutter开发环境"></a>Mac初始化Flutter开发环境</h1><h3 id="1-安装Flutter-sdk"><a href="#1-安装Flutter-sdk" class="headerlink" title="1.安装Flutter sdk"></a>1.安装Flutter sdk</h3><p>Flutter Sdk: <a href="">https://docs.flutter.dev/get-started/install</a></p>
-<p>下载解压之后:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/development</span><br><span class="line">unzip ~/Downloads/flutter_macos_3.3.2-stable.zip</span><br></pre></td></tr></table></figure>
+        <h1 id="Flutter-Web端解决跨域问题"><a href="#Flutter-Web端解决跨域问题" class="headerlink" title="Flutter Web端解决跨域问题"></a>Flutter Web端解决跨域问题</h1><p>1.当我们开发的flutter程序在ios和安卓上都运行正常时，开启web端测试。结果:</p>
+<p><img src="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/image-20220922204508015.png" alt="image-20220922204508015"></p>
+<p>从图上我们观察到了跨域错误。</p>
+<h5 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h5><p>1.引入代理包</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">dependencies:</span></span><br><span class="line">  <span class="attr">flutter:</span></span><br><span class="line">    <span class="attr">sdk:</span> <span class="string">flutter</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment"># The following adds the Cupertino Icons font to your application.</span></span><br><span class="line">  <span class="comment"># Use with the CupertinoIcons class for iOS style icons.</span></span><br><span class="line">  <span class="attr">cupertino_icons:</span> <span class="string">^1.0.2</span></span><br><span class="line">  <span class="attr">flutter_swiper_null_safety:</span> <span class="string">^1.0.2</span></span><br><span class="line">  <span class="attr">flutter_screenutil:</span> <span class="number">5.0</span><span class="number">.0</span><span class="string">+2</span></span><br><span class="line">  <span class="attr">dio:</span> <span class="string">^4.0.6</span></span><br><span class="line">  <span class="comment"># 引入代理类</span></span><br><span class="line">  <span class="attr">shelf_proxy:</span> <span class="string">^1.0.1</span></span><br></pre></td></tr></table></figure>
 
-<p>添加flutter到环境变量</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=&quot;$PATH:`pwd`/flutter/bin&quot;</span><br></pre></td></tr></table></figure>
+<p>2.在lib目录下创建server package，添加代码</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:shelf/shelf_io.dart&#x27;</span> <span class="keyword">as</span> shelf_io;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:shelf_proxy/shelf_proxy.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() <span class="keyword">async</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> server = <span class="keyword">await</span> shelf_io.serve(</span><br><span class="line">    proxyHandler(<span class="string">&quot;https://xxxxxxx&quot;</span>),</span><br><span class="line">    <span class="string">&#x27;192.168.1.8&#x27;</span>,</span><br><span class="line">    <span class="number">7777</span>,</span><br><span class="line">  );</span><br><span class="line">  <span class="comment">// 这里设置请求策略，允许所有</span></span><br><span class="line">  server.defaultResponseHeaders.add(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, <span class="string">&#x27;*&#x27;</span>);</span><br><span class="line">  server.defaultResponseHeaders.add(<span class="string">&#x27;Access-Control-Allow-Credentials&#x27;</span>, <span class="keyword">true</span>);</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;Proxying at http://<span class="subst">$&#123;server.address.host&#125;</span>:<span class="subst">$&#123;server.port&#125;</span>&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-运行flutter检查"><a href="#2-运行flutter检查" class="headerlink" title="2.运行flutter检查"></a>2.运行flutter检查</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter doctor</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/image-20220916151555043.png" alt="image-20220916151555043"></p>
-<p>我们依次安装 Android Studio, Xcode, Chrome, 没有IDEA的可以使用Vscode。</p>
-<p>如果有小伙伴Http Host Availability没有通过的，需要切换国内镜像：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export PUB_HOSTED_URL=https://pub.flutter-io.cn</span><br><span class="line">export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn</span><br></pre></td></tr></table></figure>
-
-<p>漫长的安装时间…</p>
-<p>最终通过doctor检测:</p>
-<p><img src="/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/image-20220916192244413.png" alt="image-20220916192244413"></p>
+<p>3.修改Request类的baseUrl</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:dio/dio.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">String</span> domain = <span class="string">&quot;http://192.168.1.8:7777/&quot;</span>;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">var</span> options = BaseOptions(</span><br><span class="line">    baseUrl: <span class="string">&#x27;<span class="subst">$&#123;domain&#125;</span>api&#x27;</span>,</span><br><span class="line">    <span class="comment">// connectTimeout: 5000,</span></span><br><span class="line">    receiveTimeout: <span class="number">5000</span>,</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> Dio cli() &#123;</span><br><span class="line">    <span class="keyword">return</span> Dio(options);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
 
@@ -206,6 +200,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
         		</li>
       		
 		</ul>
@@ -261,7 +259,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/child/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/child/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -275,15 +273,11 @@
   
 <nav id="article-nav">
   
-    <a href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          flutter开发问题总结
-        
-      </div>
-    </a>
   
+    <a href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">flutter开发问题总结</div>
+      <i class="icon-circle-right"></i>
+    </a>
   
 </nav>
 
