@@ -6,17 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com/child">
-  <title>Tag: rxjs | jayce的博客</title>
+  <title>DeferredResult使用解读 | jayce的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="熟悉各种大数据框架,喜欢code,目前就职于artefact.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="jayce的博客">
-<meta property="og:url" content="http://yoursite.com/child/tags/rxjs/index.html">
+  <meta name="description" content="DeferredResult使用解读1、为什么使用DeferredResult项目中我们某些接口有耗时操作，例如发送邮件、发送短信等有涉及调用的第三方接口的地方，因为第三方具有不确定性，可能耗时很久才会有数据返回。数据库某些慢查询。通常一些耗时且不必马上有返回结果的我们会采用消息中间件，例如 RabbitMQ、Disruptor等，但是有一些耗时但是又需要等待结果返回的，我们可以使用Deferre">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DeferredResult使用解读">
+<meta property="og:url" content="http://yoursite.com/child/2022/10/09/DeferredResult%E4%BD%BF%E7%94%A8%E8%A7%A3%E8%AF%BB/index.html">
 <meta property="og:site_name" content="jayce的博客">
-<meta property="og:description" content="熟悉各种大数据框架,喜欢code,目前就职于artefact.">
+<meta property="og:description" content="DeferredResult使用解读1、为什么使用DeferredResult项目中我们某些接口有耗时操作，例如发送邮件、发送短信等有涉及调用的第三方接口的地方，因为第三方具有不确定性，可能耗时很久才会有数据返回。数据库某些慢查询。通常一些耗时且不必马上有返回结果的我们会采用消息中间件，例如 RabbitMQ、Disruptor等，但是有一些耗时但是又需要等待结果返回的，我们可以使用Deferre">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-09T03:55:18.000Z">
+<meta property="article:modified_time" content="2022-10-09T05:50:30.122Z">
 <meta property="article:author" content="Jayce Zhao">
-<meta property="article:tag" content="大数据,spark,flink,hadoop,hive,java,scala,go,html,css,javascript,python,react,vue,开发者,前端,后端,编程,代码,开源">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="spring boot">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="jayce的博客" type="application/atom+xml">
@@ -145,148 +148,162 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-DeferredResult使用解读" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      DeferredResult使用解读
+    </h1>
+  
+
+        
+        <a href="/2022/10/09/DeferredResult%E4%BD%BF%E7%94%A8%E8%A7%A3%E8%AF%BB/" class="archive-article-date">
+  	<time datetime="2022-10-09T03:55:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="DeferredResult使用解读"><a href="#DeferredResult使用解读" class="headerlink" title="DeferredResult使用解读"></a>DeferredResult使用解读</h1><h3 id="1、为什么使用DeferredResult"><a href="#1、为什么使用DeferredResult" class="headerlink" title="1、为什么使用DeferredResult"></a>1、为什么使用DeferredResult</h3><h6 id="项目中我们某些接口有耗时操作，例如发送邮件、发送短信等有涉及调用的第三方接口的地方，因为第三方具有不确定性，可能耗时很久才会有数据返回。数据库某些慢查询。通常一些耗时且不必马上有返回结果的我们会采用消息中间件，例如-RabbitMQ、Disruptor等，但是有一些耗时但是又需要等待结果返回的，我们可以使用DeferredResult进行异步处理。以此提高我们服务器的性能。"><a href="#项目中我们某些接口有耗时操作，例如发送邮件、发送短信等有涉及调用的第三方接口的地方，因为第三方具有不确定性，可能耗时很久才会有数据返回。数据库某些慢查询。通常一些耗时且不必马上有返回结果的我们会采用消息中间件，例如-RabbitMQ、Disruptor等，但是有一些耗时但是又需要等待结果返回的，我们可以使用DeferredResult进行异步处理。以此提高我们服务器的性能。" class="headerlink" title="项目中我们某些接口有耗时操作，例如发送邮件、发送短信等有涉及调用的第三方接口的地方，因为第三方具有不确定性，可能耗时很久才会有数据返回。数据库某些慢查询。通常一些耗时且不必马上有返回结果的我们会采用消息中间件，例如 RabbitMQ、Disruptor等，但是有一些耗时但是又需要等待结果返回的，我们可以使用DeferredResult进行异步处理。以此提高我们服务器的性能。"></a>项目中我们某些接口有耗时操作，例如发送邮件、发送短信等有涉及调用的第三方接口的地方，因为第三方具有不确定性，可能耗时很久才会有数据返回。数据库某些慢查询。通常一些耗时且不必马上有返回结果的我们会采用消息中间件，例如 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3a3cc080c28c">RabbitMQ</a>、<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9a2610f393c0">Disruptor</a>等，但是有一些耗时但是又需要等待结果返回的，我们可以使用DeferredResult进行异步处理。以此提高我们服务器的性能。</h6><h3 id="2、实战"><a href="#2、实战" class="headerlink" title="2、实战"></a>2、实战</h3><h6 id="R为自定义的返回结果集"><a href="#R为自定义的返回结果集" class="headerlink" title="R为自定义的返回结果集"></a>R为自定义的返回结果集</h6><h6 id="tomcat并发了大概在300到500，此接口被大量访问时若没进行异步处理，服务器资源一下子就会耗完。"><a href="#tomcat并发了大概在300到500，此接口被大量访问时若没进行异步处理，服务器资源一下子就会耗完。" class="headerlink" title="tomcat并发了大概在300到500，此接口被大量访问时若没进行异步处理，服务器资源一下子就会耗完。"></a>tomcat并发了大概在300到500，此接口被大量访问时若没进行异步处理，服务器资源一下子就会耗完。</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> DeferredResult&lt;R&gt; <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">  <span class="comment">//设置10秒超时</span></span><br><span class="line">  <span class="type">DeferredResult</span> <span class="variable">deferredResult</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeferredResult</span>(<span class="number">10000L</span>);</span><br><span class="line">  <span class="comment">//模拟耗时操作</span></span><br><span class="line">  <span class="keyword">try</span></span><br><span class="line">  &#123;</span><br><span class="line">    Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">catch</span> (InterruptedException e)</span><br><span class="line">  &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  deferredResult.setResult(R.ok());</span><br><span class="line">  <span class="keyword">return</span> deferredResult;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 封装返回结果类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: hs</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span>: 2018-09-21 22:42:04</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">R</span>&lt;T&gt; <span class="keyword">extends</span> <span class="title class_">HashMap</span>&lt;String, Object&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">R</span><span class="params">(<span class="type">int</span> code,String msg)</span> &#123;</span><br><span class="line">        put(<span class="string">&quot;code&quot;</span>, code);</span><br><span class="line">        put(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">        put(<span class="string">&quot;data&quot;</span>, <span class="literal">null</span>);</span><br><span class="line">        put(<span class="string">&quot;error&quot;</span>,<span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> R <span class="title function_">fail</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">R</span>(RetEnum.ERROR.getRet(),RetEnum.ERROR.getMsg());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> R <span class="title function_">fail</span><span class="params">(String msg)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> fail(RetEnum.ERROR.getRet(), msg);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> R <span class="title function_">fail</span><span class="params">(<span class="type">int</span> code, String msg)</span> &#123;</span><br><span class="line">        <span class="type">R</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">R</span>(code,msg);</span><br><span class="line">        r.put(<span class="string">&quot;error&quot;</span>,<span class="literal">true</span>);</span><br><span class="line">        r.put(<span class="string">&quot;data&quot;</span>,<span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; R&lt;T&gt; <span class="title function_">fail</span><span class="params">(T data)</span> &#123;</span><br><span class="line">        <span class="type">R</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">R</span>(RetEnum.ERROR.getRet(),RetEnum.ERROR.getMsg());</span><br><span class="line">        r.put(<span class="string">&quot;data&quot;</span>,data);</span><br><span class="line">        r.put(<span class="string">&quot;error&quot;</span>,<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; R&lt;T&gt; <span class="title function_">fail</span><span class="params">(<span class="type">int</span> code,String msg,T data)</span> &#123;</span><br><span class="line">        <span class="type">R</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">R</span>(code,msg);</span><br><span class="line">        r.put(<span class="string">&quot;data&quot;</span>,data);</span><br><span class="line">        r.put(<span class="string">&quot;error&quot;</span>,<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> R <span class="title function_">ok</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">R</span>(RetEnum.SUCCESS.getRet(),RetEnum.SUCCESS.getMsg());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> R <span class="title function_">ok</span><span class="params">(String msg)</span> &#123;</span><br><span class="line">        <span class="type">R</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">R</span>(RetEnum.SUCCESS.getRet(),msg);</span><br><span class="line">        r.put(<span class="string">&quot;data&quot;</span>,msg);</span><br><span class="line">        r.put(<span class="string">&quot;error&quot;</span>,<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> R <span class="title function_">ok</span><span class="params">(<span class="type">int</span> code, String msg)</span> &#123;</span><br><span class="line">        <span class="type">R</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">R</span>(code,msg);</span><br><span class="line">        r.put(<span class="string">&quot;code&quot;</span>, code);</span><br><span class="line">        r.put(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">        r.put(<span class="string">&quot;data&quot;</span>, <span class="literal">null</span>);</span><br><span class="line">        r.put(<span class="string">&quot;error&quot;</span>,<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; R&lt;T&gt; <span class="title function_">ok</span><span class="params">(T data)</span> &#123;</span><br><span class="line">        <span class="type">R</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">R</span>(RetEnum.SUCCESS.getRet(),RetEnum.SUCCESS.getMsg());</span><br><span class="line">        r.put(<span class="string">&quot;data&quot;</span>,data);</span><br><span class="line">        r.put(<span class="string">&quot;error&quot;</span>,<span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; R&lt;T&gt; <span class="title function_">ok</span><span class="params">(<span class="type">int</span> code,String msg,T data)</span> &#123;</span><br><span class="line">        <span class="type">R</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">R</span>(code,msg);</span><br><span class="line">        r.put(<span class="string">&quot;data&quot;</span>,data);</span><br><span class="line">        r.put(<span class="string">&quot;error&quot;</span>,<span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">return</span> r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> R <span class="title function_">put</span><span class="params">(String key, Object value)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.put(key, value);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/" class="archive-article-date">
-  	<time datetime="2022-09-29T10:04:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/">rxjs探索之路(合并类api)</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/child/2022/10/09/DeferredResult%E4%BD%BF%E7%94%A8%E8%A7%A3%E8%AF%BB/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E8%BD%AC%E6%8D%A2%E7%B1%BBapi/" class="archive-article-date">
-  	<time datetime="2022-09-29T06:41:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          高并发缓存代码怎么写
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/10/09/lilishop%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">lilishop源码解读</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E8%BD%AC%E6%8D%A2%E7%B1%BBapi/">rxjs探索之路(转换类api)</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF/" class="archive-article-date">
-  	<time datetime="2022-09-29T02:29:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF/">rxjs探索之路</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
 
 
           </div>
@@ -310,9 +327,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
