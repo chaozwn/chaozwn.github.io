@@ -147,6 +147,98 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-flutter-web端解决跨域问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/">flutter web端解决跨域问题</a>
+    </h1>
+  
+
+        
+        <a href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" class="archive-article-date">
+  	<time datetime="2022-09-22T12:42:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Flutter-Web端解决跨域问题"><a href="#Flutter-Web端解决跨域问题" class="headerlink" title="Flutter Web端解决跨域问题"></a>Flutter Web端解决跨域问题</h1><p>1.当我们开发的flutter程序在ios和安卓上都运行正常时，开启web端测试。结果:</p>
+<p><img src="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/image-20220922204508015.png" alt="image-20220922204508015"></p>
+<p>从图上我们观察到了跨域错误。</p>
+<h5 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h5><p>1.引入代理包</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">dependencies:</span></span><br><span class="line">  <span class="attr">flutter:</span></span><br><span class="line">    <span class="attr">sdk:</span> <span class="string">flutter</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment"># The following adds the Cupertino Icons font to your application.</span></span><br><span class="line">  <span class="comment"># Use with the CupertinoIcons class for iOS style icons.</span></span><br><span class="line">  <span class="attr">cupertino_icons:</span> <span class="string">^1.0.2</span></span><br><span class="line">  <span class="attr">flutter_swiper_null_safety:</span> <span class="string">^1.0.2</span></span><br><span class="line">  <span class="attr">flutter_screenutil:</span> <span class="number">5.0</span><span class="number">.0</span><span class="string">+2</span></span><br><span class="line">  <span class="attr">dio:</span> <span class="string">^4.0.6</span></span><br><span class="line">  <span class="comment"># 引入代理类</span></span><br><span class="line">  <span class="attr">shelf_proxy:</span> <span class="string">^1.0.1</span></span><br></pre></td></tr></table></figure>
+
+<p>2.在lib目录下创建server package，添加代码</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:shelf/shelf_io.dart&#x27;</span> <span class="keyword">as</span> shelf_io;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:shelf_proxy/shelf_proxy.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() <span class="keyword">async</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> server = <span class="keyword">await</span> shelf_io.serve(</span><br><span class="line">    proxyHandler(<span class="string">&quot;https://xxxxxxx&quot;</span>),</span><br><span class="line">    <span class="string">&#x27;192.168.1.8&#x27;</span>,</span><br><span class="line">    <span class="number">7777</span>,</span><br><span class="line">  );</span><br><span class="line">  <span class="comment">// 这里设置请求策略，允许所有</span></span><br><span class="line">  server.defaultResponseHeaders.add(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, <span class="string">&#x27;*&#x27;</span>);</span><br><span class="line">  server.defaultResponseHeaders.add(<span class="string">&#x27;Access-Control-Allow-Credentials&#x27;</span>, <span class="keyword">true</span>);</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;Proxying at http://<span class="subst">$&#123;server.address.host&#125;</span>:<span class="subst">$&#123;server.port&#125;</span>&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.修改Request类的baseUrl</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:dio/dio.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">String</span> domain = <span class="string">&quot;http://192.168.1.8:7777/&quot;</span>;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">var</span> options = BaseOptions(</span><br><span class="line">    baseUrl: <span class="string">&#x27;<span class="subst">$&#123;domain&#125;</span>api&#x27;</span>,</span><br><span class="line">    <span class="comment">// connectTimeout: 5000,</span></span><br><span class="line">    receiveTimeout: <span class="number">5000</span>,</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> Dio cli() &#123;</span><br><span class="line">    <span class="keyword">return</span> Dio(options);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-flutter开发问题总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -437,6 +529,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">lua</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aop</a>
               </li>
              
               <li class="article-tag-list-item">
