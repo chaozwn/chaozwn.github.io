@@ -6,18 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com/child">
-  <title>Tag: java | jayce的博客</title>
+  <title>通过aop注解实现自动重试的功能 | jayce的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="熟悉各种大数据框架,喜欢code,目前就职于artefact.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="jayce的博客">
-<meta property="og:url" content="http://yoursite.com/child/tags/java/index.html">
+  <meta name="description" content="通过aop注解实现自动重试的功能有时候，我们在程序中不得不对某些方法进行重试，比如说，请求某个接口，如果我们每次，都通过while和count–的写法无疑会让代码，变的很不优雅。因此我们这边用spring的aop设计一下这个功能。 1.我们定义一个Exception，如果我们想重试的方法，可以指定抛出RetryException异常12345678910@EqualsAndHashCode(cal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过aop注解实现自动重试的功能">
+<meta property="og:url" content="http://yoursite.com/child/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/index.html">
 <meta property="og:site_name" content="jayce的博客">
-<meta property="og:description" content="熟悉各种大数据框架,喜欢code,目前就职于artefact.">
+<meta property="og:description" content="通过aop注解实现自动重试的功能有时候，我们在程序中不得不对某些方法进行重试，比如说，请求某个接口，如果我们每次，都通过while和count–的写法无疑会让代码，变的很不优雅。因此我们这边用spring的aop设计一下这个功能。 1.我们定义一个Exception，如果我们想重试的方法，可以指定抛出RetryException异常12345678910@EqualsAndHashCode(cal">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/image-20221010191629311.png">
+<meta property="article:published_time" content="2022-10-10T11:06:57.000Z">
+<meta property="article:modified_time" content="2022-10-10T11:16:35.900Z">
 <meta property="article:author" content="Jayce Zhao">
-<meta property="article:tag" content="大数据,spark,flink,hadoop,hive,java,scala,go,html,css,javascript,python,react,vue,开发者,前端,后端,编程,代码,开源">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="spring boot">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/image-20221010191629311.png">
   
     <link rel="alternative" href="/atom.xml" title="jayce的博客" type="application/atom+xml">
   
@@ -145,36 +150,47 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-通过aop注解实现自动重试的功能" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      通过aop注解实现自动重试的功能
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/" class="archive-article-date">
+
+        
+        <a href="/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/" class="archive-article-date">
   	<time datetime="2022-10-10T11:06:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-10</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/">通过aop注解实现自动重试的功能</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="通过aop注解实现自动重试的功能"><a href="#通过aop注解实现自动重试的功能" class="headerlink" title="通过aop注解实现自动重试的功能"></a>通过aop注解实现自动重试的功能</h1><p>有时候，我们在程序中不得不对某些方法进行重试，比如说，请求某个接口，如果我们每次，都通过while和count–的写法无疑会让代码，变的很不优雅。因此我们这边用spring的aop设计一下这个功能。</p>
+<h5 id="1-我们定义一个Exception，如果我们想重试的方法，可以指定抛出RetryException异常"><a href="#1-我们定义一个Exception，如果我们想重试的方法，可以指定抛出RetryException异常" class="headerlink" title="1.我们定义一个Exception，如果我们想重试的方法，可以指定抛出RetryException异常"></a>1.我们定义一个Exception，如果我们想重试的方法，可以指定抛出RetryException异常</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EqualsAndHashCode(callSuper = true)</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RetryException</span> <span class="keyword">extends</span> <span class="title class_">RuntimeException</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">7886918292771470846L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">RetryException</span><span class="params">(String message)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
+<h5 id="2-定义我们的retry注解"><a href="#2-定义我们的retry注解" class="headerlink" title="2.定义我们的retry注解"></a>2.定义我们的retry注解</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> RetryOperation &#123;</span><br><span class="line">    <span class="comment">/** 重试次数 */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">retryCount</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 重试间隔 */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">waitSeconds</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">10</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-实现我们的interceptor逻辑"><a href="#3-实现我们的interceptor逻辑" class="headerlink" title="3.实现我们的interceptor逻辑"></a>3.实现我们的interceptor逻辑</h5><p>稍微解释一下下面的代码，我们around环绕，可以让我们在method执行之前对他进行拦截，然后只catch我们指定的RetryException,</p>
+<p>对整个代码进行重新调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RetryAspect</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around(value = &quot;@annotation(retryOperation)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">retryOperation</span><span class="params">(ProceedingJoinPoint joinPoint, RetryOperation retryOperation)</span></span><br><span class="line">            <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;指定方法异常重试开始&quot;</span>);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">response</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">retryCount</span> <span class="operator">=</span> retryOperation.retryCount();</span><br><span class="line">        <span class="type">int</span> <span class="variable">waitSeconds</span> <span class="operator">=</span> retryOperation.waitSeconds();</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">successful</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                response = joinPoint.proceed();</span><br><span class="line">                successful = <span class="literal">true</span>;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (RetryException ex) &#123;</span><br><span class="line">                log.info(<span class="string">&quot;Operation failed, retries remaining: &#123;&#125;&quot;</span>, retryCount);</span><br><span class="line">                retryCount--;</span><br><span class="line">                <span class="keyword">if</span> (retryCount &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                    successful = <span class="literal">true</span>;</span><br><span class="line">                    log.error(ex.getMessage());</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (waitSeconds &gt; <span class="number">0</span> &amp;&amp; !successful) &#123;</span><br><span class="line">                    log.info(<span class="string">&quot;Waiting for &#123;&#125; second(s) before next retry&quot;</span>, waitSeconds);</span><br><span class="line">                    Thread.sleep(waitSeconds * <span class="number">1000L</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (!successful);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-测试代码"><a href="#4-测试代码" class="headerlink" title="4.测试代码"></a>4.测试代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RetryOperation(retryCount = 3, waitSeconds = 10)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/retry&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">retry</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RetryException</span>(<span class="string">&quot;aop执行&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过console打印结果，得到了我们需要的效果</p>
+<p><img src="/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/image-20221010191629311.png" alt="image-20221010191629311"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -190,345 +206,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/child/2022/10/10/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E9%87%8D%E8%AF%95%E7%9A%84%E5%8A%9F%E8%83%BD/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/" class="archive-article-date">
-  	<time datetime="2022-10-10T10:35:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-10</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Spring aop的执行顺序</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">Spring aop的执行顺序</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">aop</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/" class="archive-article-date">
-  	<time datetime="2022-10-10T09:25:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/">Redis使用Lua脚本保证原子性</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">lua</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/09/%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C%E8%AE%B0%E5%BD%95/" class="archive-article-date">
-  	<time datetime="2022-10-09T13:36:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/09/%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C%E8%AE%B0%E5%BD%95/">常用的一些开发经验记录</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/09/Spring%E7%BC%93%E5%AD%98%E6%B3%A8%E8%A7%A3-Cacheable%E3%80%81-CacheEvict%E3%80%81-CachePut%E7%9A%84%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-  	<time datetime="2022-10-09T09:42:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/09/Spring%E7%BC%93%E5%AD%98%E6%B3%A8%E8%A7%A3-Cacheable%E3%80%81-CacheEvict%E3%80%81-CachePut%E7%9A%84%E4%BD%BF%E7%94%A8/">Spring缓存注解@Cacheable、@CacheEvict、@CachePut的使用</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/" class="archive-article-date">
-  	<time datetime="2022-10-09T06:22:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/">高并发缓存代码怎么写</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">高并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/09/DeferredResult%E4%BD%BF%E7%94%A8%E8%A7%A3%E8%AF%BB/" class="archive-article-date">
-  	<time datetime="2022-10-09T03:55:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/09/DeferredResult%E4%BD%BF%E7%94%A8%E8%A7%A3%E8%AF%BB/">DeferredResult使用解读</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/09/lilishop%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/" class="archive-article-date">
-  	<time datetime="2022-10-09T03:00:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/09/lilishop%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">lilishop源码解读</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">电商</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -552,9 +329,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
