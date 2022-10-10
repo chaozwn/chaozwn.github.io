@@ -147,6 +147,91 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-flutter开发问题总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/">flutter开发问题总结</a>
+    </h1>
+  
+
+        
+        <a href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" class="archive-article-date">
+  	<time datetime="2022-09-21T12:59:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="flutter开发问题总结"><a href="#flutter开发问题总结" class="headerlink" title="flutter开发问题总结"></a>flutter开发问题总结</h1><h3 id="1-引入flutter-swiper报错不同通过空值检查"><a href="#1-引入flutter-swiper报错不同通过空值检查" class="headerlink" title="1. 引入flutter_swiper报错不同通过空值检查"></a>1. 引入flutter_swiper报错不同通过空值检查</h3><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Error: Cannot run <span class="keyword">with</span> sound <span class="keyword">null</span> safety, because the following dependencies</span><br><span class="line">don’t support <span class="keyword">null</span> safety:</span><br><span class="line"></span><br><span class="line">package:flutter_swiper</span><br><span class="line">package:flutter_page_indicator</span><br><span class="line">package:transformer_page_view</span><br><span class="line">For solutions, see https:<span class="comment">//dart.dev/go/unsound-null-safet</span></span><br></pre></td></tr></table></figure>
+
+<p>解决方法:</p>
+<h6 id="1-Android-Studio"><a href="#1-Android-Studio" class="headerlink" title="1.Android Studio"></a>1.Android Studio</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">run --&gt; Edit Configurations --&gt; Additional run args添加</span><br><span class="line">--no-sound-null-safety</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20220921210118401.png" alt="image-20220921210118401"></p>
+<h6 id="2-Vscode"><a href="#2-Vscode" class="headerlink" title="2.Vscode"></a>2.Vscode</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">在用户设置里查找&quot;Flutter run additional args&quot;并添加</span><br><span class="line">--no-sound-null-safety</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Mac初始化flutter开发环境" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -348,6 +433,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">lua</a>
               </li>
              
               <li class="article-tag-list-item">

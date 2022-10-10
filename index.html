@@ -147,6 +147,109 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Redis使用Lua脚本保证原子性" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/">Redis使用Lua脚本保证原子性</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/" class="archive-article-date">
+  	<time datetime="2022-10-10T09:25:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Redis使用Lua脚本保证原子性"><a href="#Redis使用Lua脚本保证原子性" class="headerlink" title="Redis使用Lua脚本保证原子性"></a>Redis使用Lua脚本保证原子性</h1><p>Redis使用同一个Lua解释器来执行所有命令，同时，Redis保证以一种原子性的方式来执行脚本：当lua脚本在执行的时候，不会有其他脚本和命令同时执行，这种语义类似于 MULTI&#x2F;EXEC。从别的客户端的视角来看，一个lua脚本要么不可见，要么已经执行完。</p>
+<p>然而这也意味着，执行一个较慢的lua脚本是不建议的，由于脚本的开销非常低，构造一个快速执行的脚本并非难事。但是你要注意到，当你正在执行一个比较慢的脚本时，所以其他的客户端都无法执行命令。</p>
+<h2 id="我们通过lua和java注解实现一个流量限速功能"><a href="#我们通过lua和java注解实现一个流量限速功能" class="headerlink" title="我们通过lua和java注解实现一个流量限速功能"></a>我们通过lua和java注解实现一个流量限速功能</h2><h5 id="1-创建一个limit-lua"><a href="#1-创建一个limit-lua" class="headerlink" title="1.创建一个limit.lua"></a>1.创建一个limit.lua</h5><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> c</span><br><span class="line">c = redis.call(<span class="string">&#x27;get&#x27;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="comment">-- 调用不超过最大值，则直接返回</span></span><br><span class="line"><span class="keyword">if</span> c <span class="keyword">and</span> <span class="built_in">tonumber</span>(c) &gt; <span class="built_in">tonumber</span>(ARGV[<span class="number">1</span>]) <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment">-- 执行计算器自加</span></span><br><span class="line">c = redis.call(<span class="string">&#x27;incr&#x27;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">tonumber</span>(c) == <span class="number">1</span> <span class="keyword">then</span></span><br><span class="line"><span class="comment">-- 从第一次调用开始限流，设置对应键值的过期</span></span><br><span class="line">    redis.call(<span class="string">&#x27;expire&#x27;</span>,KEYS[<span class="number">1</span>],ARGV[<span class="number">2</span>])</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">return</span> c;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-java代码读取lua脚本，自动注入"><a href="#2-java代码读取lua脚本，自动注入" class="headerlink" title="2.java代码读取lua脚本，自动注入"></a>2.java代码读取lua脚本，自动注入</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 流量限制脚本</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> DefaultRedisScript&lt;Long&gt; <span class="title function_">limitScript</span><span class="params">()</span> &#123;</span><br><span class="line">    DefaultRedisScript&lt;Long&gt; redisScript = <span class="keyword">new</span> <span class="title class_">DefaultRedisScript</span>&lt;&gt;();</span><br><span class="line">    redisScript.setScriptSource(</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">ResourceScriptSource</span>(<span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(<span class="string">&quot;script/limit.lua&quot;</span>)));</span><br><span class="line">    redisScript.setResultType(Long.class);</span><br><span class="line">    <span class="keyword">return</span> redisScript;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-创建注解LimitPoint"><a href="#3-创建注解LimitPoint" class="headerlink" title="3.创建注解LimitPoint"></a>3.创建注解LimitPoint</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 限流注解</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> jayce</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.METHOD, ElementType.TYPE&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> LimitPoint &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 资源的名字 无实际意义，但是可以用于排除异常</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">name</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 资源的key</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;如果下方 limitType 值为自定义，那么全局限流参数来自于此 如果limitType 为ip，则限流条件 为 key+ip</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">key</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Key的prefix redis前缀，可选</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">prefix</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 给定的时间段 单位秒</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">period</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">60</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 最多的访问限制次数</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">limit</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 类型 ip限制 还是自定义key值限制 建议使用ip，自定义key属于全局限制，ip则是某节点设置，通常情况使用IP</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> LimitType</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    LimitTypeEnums <span class="title function_">limitType</span><span class="params">()</span> <span class="keyword">default</span> LimitTypeEnums.IP;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-aop拦截操作"><a href="#4-aop拦截操作" class="headerlink" title="4.aop拦截操作"></a>4.aop拦截操作</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Before(&quot;@annotation(limitPointAnnotation)&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">interceptor</span><span class="params">(LimitPoint limitPointAnnotation)</span> &#123;</span><br><span class="line">    <span class="type">LimitTypeEnums</span> <span class="variable">limitTypeEnums</span> <span class="operator">=</span> limitPointAnnotation.limitType();</span><br><span class="line"></span><br><span class="line">    String key;</span><br><span class="line">    <span class="type">int</span> <span class="variable">limitPeriod</span> <span class="operator">=</span> limitPointAnnotation.period();</span><br><span class="line">    <span class="type">int</span> <span class="variable">limitCount</span> <span class="operator">=</span> limitPointAnnotation.limit();</span><br><span class="line">    <span class="keyword">if</span> (limitTypeEnums == LimitTypeEnums.CUSTOMER) &#123;</span><br><span class="line">        key = limitPointAnnotation.key();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        key =</span><br><span class="line">                limitPointAnnotation.key()</span><br><span class="line">                        + IpUtils.getIpAddress(</span><br><span class="line">                                ((ServletRequestAttributes)</span><br><span class="line">                                                Objects.requireNonNull(</span><br><span class="line">                                                        RequestContextHolder</span><br><span class="line">                                                                .getRequestAttributes()))</span><br><span class="line">                                        .getRequest());</span><br><span class="line">    &#125;</span><br><span class="line">    ImmutableList&lt;String&gt; keys =</span><br><span class="line">            ImmutableList.of(StringUtils.join(limitPointAnnotation.prefix(), key));</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">Number</span> <span class="variable">count</span> <span class="operator">=</span> redisTemplate.execute(limitScript, keys, limitCount, limitPeriod);</span><br><span class="line">        <span class="keyword">assert</span> count != <span class="literal">null</span>;</span><br><span class="line">        log.info(<span class="string">&quot;限制请求&#123;&#125;, 当前请求&#123;&#125;,缓存key&#123;&#125;&quot;</span>, limitCount, count.intValue(), key);</span><br><span class="line">        <span class="comment">// 如果缓存里没有值，或者他的值小于限制频率</span></span><br><span class="line">        <span class="keyword">if</span> (count.intValue() &gt;= limitCount) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.LIMIT_ERROR);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果从redis中执行都值判定为空，则这里跳过</span></span><br><span class="line">    <span class="keyword">catch</span> (NullPointerException ignored) &#123;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ServiceException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;限流异常&quot;</span>, e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.ERROR);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上操作，我们通过下方的代码实现了流量限速，并且保证了原子性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Number</span> <span class="variable">count</span> <span class="operator">=</span> redisTemplate.execute(limitScript, keys, limitCount, limitPeriod);</span><br></pre></td></tr></table></figure>
+
+<p>下面使我们的调用代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@LimitPoint(key = &quot;hello&quot;, period = 60, limit = 2,limitType = LimitTypeEnums.IP)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    cache.put(<span class="string">&quot;test&quot;</span>,<span class="string">&quot;test&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后使我们的效果截图：</p>
+<p><img src="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/image-20221010173503515.png" alt="image-20221010173503515"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">lua</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-常用的一些开发经验记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1255,91 +1358,6 @@
 
 
   
-    <article id="post-flutter开发问题总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/">flutter开发问题总结</a>
-    </h1>
-  
-
-        
-        <a href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" class="archive-article-date">
-  	<time datetime="2022-09-21T12:59:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="flutter开发问题总结"><a href="#flutter开发问题总结" class="headerlink" title="flutter开发问题总结"></a>flutter开发问题总结</h1><h3 id="1-引入flutter-swiper报错不同通过空值检查"><a href="#1-引入flutter-swiper报错不同通过空值检查" class="headerlink" title="1. 引入flutter_swiper报错不同通过空值检查"></a>1. 引入flutter_swiper报错不同通过空值检查</h3><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Error: Cannot run <span class="keyword">with</span> sound <span class="keyword">null</span> safety, because the following dependencies</span><br><span class="line">don’t support <span class="keyword">null</span> safety:</span><br><span class="line"></span><br><span class="line">package:flutter_swiper</span><br><span class="line">package:flutter_page_indicator</span><br><span class="line">package:transformer_page_view</span><br><span class="line">For solutions, see https:<span class="comment">//dart.dev/go/unsound-null-safet</span></span><br></pre></td></tr></table></figure>
-
-<p>解决方法:</p>
-<h6 id="1-Android-Studio"><a href="#1-Android-Studio" class="headerlink" title="1.Android Studio"></a>1.Android Studio</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">run --&gt; Edit Configurations --&gt; Additional run args添加</span><br><span class="line">--no-sound-null-safety</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20220921210118401.png" alt="image-20220921210118401"></p>
-<h6 id="2-Vscode"><a href="#2-Vscode" class="headerlink" title="2.Vscode"></a>2.Vscode</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">在用户设置里查找&quot;Flutter run additional args&quot;并添加</span><br><span class="line">--no-sound-null-safety</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next</a>
@@ -1447,6 +1465,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">lua</a>
               </li>
              
               <li class="article-tag-list-item">
