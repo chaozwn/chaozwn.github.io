@@ -147,6 +147,103 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-编译flink遇到的问题记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/11/%E7%BC%96%E8%AF%91flink%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">编译flink遇到的问题记录</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/11/%E7%BC%96%E8%AF%91flink%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="archive-article-date">
+  	<time datetime="2022-10-11T04:09:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="编译flink遇到的问题记录"><a href="#编译flink遇到的问题记录" class="headerlink" title="编译flink遇到的问题记录"></a>编译flink遇到的问题记录</h1><p>今天编译flink遇到的几个问题简单的记录下。</p>
+<p>1.第一个问题<strong>Blocked mirror for repositories</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Could not resolve dependencies for project</span><br><span class="line">Could not transfer artifact</span><br><span class="line">Blocked mirror for repositories</span><br></pre></td></tr></table></figure>
+
+<p>我们maven3.8.1在以上版本默认会禁止非https的请求，我们需要降低版本，我使用了maven3.6.8版本</p>
+<p>2.第二个问题，maven的settings.xml,可以使用阿里的</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-aliyun<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>Nexus aliyun<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">scala</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flink</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">实时计算</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/10/11/%E7%BC%96%E8%AF%91flink%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-通过aop注解实现防止重复提交" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -542,11 +639,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1-常用的开发总结"><a href="#1-常用的开发总结" class="headerlink" title="1.常用的开发总结"></a>1.常用的开发总结</h1><p>1.lombok @Data当中不包含继承Serializable接口，因此pojo要手动继承这个类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SearchVO</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="1-常用的开发总结"><a href="#1-常用的开发总结" class="headerlink" title="1.常用的开发总结"></a>1.常用的开发总结</h1><h3 id="1-lombok-Data当中不包含继承Serializable接口，因此pojo要手动继承这个类"><a href="#1-lombok-Data当中不包含继承Serializable接口，因此pojo要手动继承这个类" class="headerlink" title="1.lombok @Data当中不包含继承Serializable接口，因此pojo要手动继承这个类"></a>1.lombok @Data当中不包含继承Serializable接口，因此pojo要手动继承这个类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SearchVO</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">		<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>2.fastjson重复引用和循环引用</p>
-<p>循环引用：</p>
+<h3 id="2-fastjson重复引用和循环引用"><a href="#2-fastjson重复引用和循环引用" class="headerlink" title="2.fastjson重复引用和循环引用"></a>2.fastjson重复引用和循环引用</h3><p>循环引用：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 循环引用的特殊情况，自引用</span></span><br><span class="line">Map&lt;String,Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">map.put(<span class="string">&quot;map&quot;</span>,map);</span><br><span class="line"><span class="comment">// map1引用了map2，而map2又引用map1，导致循环引用</span></span><br><span class="line">Map&lt;String,Object&gt; map1 = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">Map&lt;String,Object&gt; map2 = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">map1.put(<span class="string">&quot;map&quot;</span>,map2);</span><br><span class="line">map2.put(<span class="string">&quot;map&quot;</span>,map1);</span><br></pre></td></tr></table></figure>
 
 <p>一般来说，存在循环引用问题的集合&#x2F;对象在序列化时（比如Json化），如果不加以处理，会触发StackOverflowError异常。</p>
@@ -554,14 +649,11 @@
 <p>当序列化引擎解析map1时，它发现这个对象持有一个map2的引用，转而去解析map2。解析map2时，发现他又持有map1的引用，又转回map1。如此产生StackOverflowError异常。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//关闭FastJson的引用检测</span></span><br><span class="line">JSON.toJSONString(object,SerializerFeature.DisableCircularReferenceDetect);</span><br></pre></td></tr></table></figure>
 
-<p>3.spring引入了RedisOperations.class才会配置这个类</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//在config上使用，只有我们引入redis包的时候，才会构建bean</span><br><span class="line">@ConditionalOnClass(RedisOperations.class)</span><br></pre></td></tr></table></figure>
+<h3 id="3-spring引入了RedisOperations-class才会配置这个类"><a href="#3-spring引入了RedisOperations-class才会配置这个类" class="headerlink" title="3.spring引入了RedisOperations.class才会配置这个类"></a>3.spring引入了RedisOperations.class才会配置这个类</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//在config上使用，只有我们引入redis包的时候，才会构建bean</span><br><span class="line">@ConditionalOnClass(RedisOperations.class)</span><br></pre></td></tr></table></figure>
 
-<p>4.@ConditionalOnMissingBean,只有当不存在这个bean的时候才能注册成功。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean(name = &quot;redisTemplate&quot;)</span></span><br><span class="line"><span class="comment">//当你的bean被注册之后，如果而注册相同类型的bean，就不会成功，它会保证你的bean只有一个，即你的实例只有一个，当你注册多个相同的bean时，会出现异常</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean(name = &quot;redisTemplate&quot;)</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-ConditionalOnMissingBean-只有当不存在这个bean的时候才能注册成功。"><a href="#4-ConditionalOnMissingBean-只有当不存在这个bean的时候才能注册成功。" class="headerlink" title="4.@ConditionalOnMissingBean,只有当不存在这个bean的时候才能注册成功。"></a>4.@ConditionalOnMissingBean,只有当不存在这个bean的时候才能注册成功。</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean(name = &quot;redisTemplate&quot;)</span></span><br><span class="line"><span class="comment">//当你的bean被注册之后，如果而注册相同类型的bean，就不会成功，它会保证你的bean只有一个，即你的实例只有一个，当你注册多个相同的bean时，会出现异常</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean(name = &quot;redisTemplate&quot;)</span></span><br></pre></td></tr></table></figure>
 
-<p>5.mybatis-plus开通二级缓存</p>
-<h6 id="1-mapper接口添加注解"><a href="#1-mapper接口添加注解" class="headerlink" title="1.mapper接口添加注解"></a>1.mapper接口添加注解</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="meta">@CacheNamespace</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HisAlarmDao</span> <span class="keyword">extends</span> <span class="title class_">BaseMapper</span>&lt;HisAlarmEntity&gt; &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5-mybatis-plus开通二级缓存"><a href="#5-mybatis-plus开通二级缓存" class="headerlink" title="5.mybatis-plus开通二级缓存"></a>5.mybatis-plus开通二级缓存</h3><h6 id="1-mapper接口添加注解"><a href="#1-mapper接口添加注解" class="headerlink" title="1.mapper接口添加注解"></a>1.mapper接口添加注解</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="meta">@CacheNamespace</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HisAlarmDao</span> <span class="keyword">extends</span> <span class="title class_">BaseMapper</span>&lt;HisAlarmEntity&gt; &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h6 id="2-application-yml开通二级缓存"><a href="#2-application-yml开通二级缓存" class="headerlink" title="2.application.yml开通二级缓存"></a>2.application.yml开通二级缓存</h6><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Mybatis-plus配置</span></span><br><span class="line"><span class="attr">mybatis-plus:</span></span><br><span class="line">  <span class="attr">configuration:</span></span><br><span class="line">    <span class="attr">cache-enabled:</span> <span class="literal">true</span> <span class="comment">#开启mybatis的二级缓存</span></span><br></pre></td></tr></table></figure>
 
@@ -1165,159 +1257,6 @@
 
 
   
-    <article id="post-rxjs探索之路-合并类api" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/">rxjs探索之路(合并类api)</a>
-    </h1>
-  
-
-        
-        <a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/" class="archive-article-date">
-  	<time datetime="2022-09-29T10:04:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Rxjs的探索之路-合并类api"><a href="#Rxjs的探索之路-合并类api" class="headerlink" title="Rxjs的探索之路(合并类api)"></a>Rxjs的探索之路(合并类api)</h1><h3 id="Api功能分类"><a href="#Api功能分类" class="headerlink" title="Api功能分类"></a>Api功能分类</h3><ul>
-<li>创建类（creation） </li>
-<li>转化类（transformation） </li>
-<li>过滤类（filtering） </li>
-<li>合并类（combination） </li>
-<li>多播类（multicasting） </li>
-<li>错误处理类（error Handling） </li>
-<li>辅助⼯具类（utility） </li>
-<li>条件分⽀类（conditional&amp;boolean） </li>
-<li>数学和合计类（mathmatical&amp;aggregate）</li>
-</ul>
-<h4 id="转换类-combination"><a href="#转换类-combination" class="headerlink" title="转换类(combination)"></a>转换类(combination)</h4><p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929144437487.png" alt="image-20220929144437487"></p>
-<h4 id="1-concat"><a href="#1-concat" class="headerlink" title="1.concat"></a>1.concat</h4><p>concat的⼯作⽅式是这样： </p>
-<ol>
-<li>从第⼀个Observable对象获取数据，把数据传给下游。对于实例操 作符⽤法，第⼀个Observable就是调⽤concat的那个对象；对于静态操作符 ⽤法，第⼀个Observable是concat第⼀个参数。 </li>
-<li>当第⼀个Observable对象complete之后，concat就会去subscribe第⼆ 个Observable对象获取数据，把数据同样传给下游。 </li>
-<li>依次类推，直到最后⼀个Observable完结之后，concat产⽣的 Observable也就完结了。</li>
-</ol>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; concat, <span class="keyword">of</span> &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">of</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">of</span>(<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line"><span class="title function_">concat</span>(source1$, source2$).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929145635567.png" alt="image-20220929145635567"></p>
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929145613322.png" alt="image-20220929145613322"></p>
-<h4 id="2-merge"><a href="#2-merge" class="headerlink" title="2.merge"></a>2.merge</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; map, merge, take, timer &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// merge先到先得</span></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">timer</span>(<span class="number">100</span>, <span class="number">1000</span>).<span class="title function_">pipe</span>(</span><br><span class="line">  <span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span> <span class="string">`A<span class="subst">$&#123;x&#125;</span>`</span>),</span><br><span class="line">  <span class="title function_">take</span>(<span class="number">3</span>)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">timer</span>(<span class="number">500</span>, <span class="number">1000</span>).<span class="title function_">pipe</span>(</span><br><span class="line">  <span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span> <span class="string">`B<span class="subst">$&#123;x&#125;</span>`</span>),</span><br><span class="line">  <span class="title function_">take</span>(<span class="number">3</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="title function_">merge</span>(source1$, source2$).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929150106286.png" alt="image-20220929150106286"></p>
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929150143687.png" alt="image-20220929150143687"></p>
-<p>source3$中的数据永远不会获得进⼊merged$的机会,因为merge最后⼀个参数是2,也就限定了同时只能同步合并两个Observable对象的数据,source1$和source2$排在前⾯,所以优先合并它们两个,只有source1$和source2$其中之⼀完结的时候,才能空出⼀个名额来给source3$,可是source1$和source2$又不会完结,所以source3$没有出头之⽇。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; map, merge, take, timer &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// merge的同步限流</span></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">timer</span>(<span class="number">100</span>, <span class="number">1000</span>).<span class="title function_">pipe</span>(<span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span> <span class="string">`A<span class="subst">$&#123;x&#125;</span>`</span>));</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">timer</span>(<span class="number">500</span>, <span class="number">1000</span>).<span class="title function_">pipe</span>(<span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span> <span class="string">`B<span class="subst">$&#123;x&#125;</span>`</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source3$ = <span class="title function_">timer</span>(<span class="number">1000</span>, <span class="number">1000</span>).<span class="title function_">pipe</span>(<span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span> <span class="string">`C<span class="subst">$&#123;x&#125;</span>`</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传入第3个参数</span></span><br><span class="line"><span class="title function_">merge</span>(source1$, source2$, source3$, <span class="number">2</span>).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929155221725.png" alt="image-20220929155221725"></p>
-<h4 id="3-zip"><a href="#3-zip" class="headerlink" title="3.zip"></a>3.zip</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="keyword">of</span>, zip &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">of</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">of</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>);</span><br><span class="line"><span class="comment">// zip是将两个数据流压缩到一起，然后再输出</span></span><br><span class="line"><span class="title function_">zip</span>(source1$, source2$).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929172817166.png" alt="image-20220929172817166"></p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; interval, <span class="keyword">of</span>, zip &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当出现一条无限流,在source2走完的时候，整个流就结束了</span></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">interval</span>(<span class="number">1000</span>);</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">of</span>(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>);</span><br><span class="line"><span class="comment">// zip是将两个数据流压缩到一起，然后再输出</span></span><br><span class="line"><span class="title function_">zip</span>(source1$, source2$).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929172957309.png" alt="image-20220929172957309"></p>
-<h4 id="4-combineLatest"><a href="#4-combineLatest" class="headerlink" title="4.combineLatest"></a>4.combineLatest</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; combineLatest, timer &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">timer</span>(<span class="number">500</span>, <span class="number">1000</span>);</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">timer</span>(<span class="number">1000</span>, <span class="number">1000</span>);</span><br><span class="line"><span class="comment">// 数据输出的时候会自动使用流的最新的一条数据</span></span><br><span class="line"><span class="title function_">combineLatest</span>(&#123; source1$, source2$ &#125;).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929173910865.png" alt="image-20220929173910865"></p>
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929173410546.png" alt="image-20220929173410546"></p>
-<h4 id="5-withLatestForm"><a href="#5-withLatestForm" class="headerlink" title="5.withLatestForm"></a>5.withLatestForm</h4><ol>
-<li>在第0毫秒时刻，source1$吐出数据100，source2$没有吐出数据， 所以没有给下游产⽣数据。 </li>
-<li>在第500毫秒时刻，source2$吐出数据0，但是source2$并不直接触 发给下游传递数据，所以依然没有给下游产⽣产⽣数据。</li>
-<li>在第1500毫秒时刻，source2$吐出数据1，同样不会给下游产⽣数 据。 </li>
-<li>在第2000毫秒时刻，source1$吐出数据100，这个数据会加上 source2$吐出的最后⼀个数据1，产⽣传给下游的数据101。 </li>
-<li>在第2500毫秒时刻，source2$吐出数据2，不会给下游产⽣数据。 </li>
-<li>在第3500毫秒时刻，source2$吐出数据3，不会给下游产⽣数据。 </li>
-<li>在第4000毫秒时刻，source1$吐出数据200，这个数据加上 source2$吐出的最后⼀个数据3，产⽣传给下游的的数据203。</li>
-</ol>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; map, timer, withLatestFrom &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">timer</span>(<span class="number">0</span>, <span class="number">2000</span>).<span class="title function_">pipe</span>(<span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span> <span class="number">100</span> * x));</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">timer</span>(<span class="number">500</span>, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">source1$.<span class="title function_">pipe</span>(<span class="title function_">withLatestFrom</span>(source2$, <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b)).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929174544361.png" alt="image-20220929174544361"></p>
-<p>在输出中，所有输出的百位数由source1贡献，个位数由source2贡献。可以看到，source2虽然产⽣的是连续递增的整数序列，但并不是所 有数据都进⼊了最终结果，很明显2和4就没有出现在最终结果的个位。⽽ source1$产⽣的数据，除了第⼀个0，其余全部出现在了最终结果的百位。</p>
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929174741052.png" alt="image-20220929174741052"></p>
-<h4 id="6-race"><a href="#6-race" class="headerlink" title="6.race"></a>6.race</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; map, race, timer &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">timer</span>(<span class="number">0</span>, <span class="number">2000</span>).<span class="title function_">pipe</span>(<span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span> <span class="number">100</span> * x));</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">timer</span>(<span class="number">500</span>, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="title function_">race</span>(source1$, source2$).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929175423274.png" alt="image-20220929175423274"></p>
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929175405775.png" alt="image-20220929175405775"></p>
-<h4 id="7-startWith"><a href="#7-startWith" class="headerlink" title="7.startWith"></a>7.startWith</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="keyword">of</span>, startWith &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">of</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// 数据流开始之前添加start</span></span><br><span class="line">source1$.<span class="title function_">pipe</span>(<span class="title function_">startWith</span>(<span class="string">&quot;start&quot;</span>)).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929175627524.png" alt="image-20220929175627524"></p>
-<h4 id="8-forkJoin"><a href="#8-forkJoin" class="headerlink" title="8.forkJoin"></a>8.forkJoin</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; forkJoin, <span class="keyword">of</span> &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> source1$ = <span class="title function_">of</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="keyword">const</span> source2$ = <span class="title function_">of</span>(<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 默认返回的是每个source最后的一条数据</span></span><br><span class="line"><span class="title function_">forkJoin</span>([source1$, source2$]).<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929175856849.png" alt="image-20220929175856849"></p>
-<h4 id="9-concatAll-mergeAll-zipAll-combineAll"><a href="#9-concatAll-mergeAll-zipAll-combineAll" class="headerlink" title="9.concatAll,mergeAll,zipAll,combineAll"></a>9.concatAll,mergeAll,zipAll,combineAll</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; concatAll, interval, map, take &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// concatAll,mergeAll,zipAll,combineAll 本身功能是一致的，会把高阶observable打平</span></span><br><span class="line"><span class="title function_">interval</span>(<span class="number">1000</span>)</span><br><span class="line">  .<span class="title function_">pipe</span>(</span><br><span class="line">    <span class="title function_">take</span>(<span class="number">2</span>),</span><br><span class="line">    <span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span></span><br><span class="line">      <span class="title function_">interval</span>(<span class="number">1500</span>).<span class="title function_">pipe</span>(</span><br><span class="line">        <span class="title function_">map</span>(<span class="function">(<span class="params">y</span>) =&gt;</span> x + <span class="string">&quot;:&quot;</span> + y),</span><br><span class="line">        <span class="title function_">take</span>(<span class="number">2</span>)</span><br><span class="line">      )</span><br><span class="line">    ),</span><br><span class="line">    <span class="title function_">concatAll</span>()</span><br><span class="line">  )</span><br><span class="line">  .<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929182038573.png" alt="image-20220929182038573"></p>
-<h4 id="10-switchAll"><a href="#10-switchAll" class="headerlink" title="10.switchAll"></a>10.switchAll</h4><p>switch的含义就是“切换”，总是切换到最新的内部Observable对象获取 数据。每当switch的上游⾼阶Observable产⽣⼀个内部Observable对象， switch都会⽴刻订阅最新的内部Observable对象上，如果已经订阅了之前的 内部Observable对象，就会退订那个过时的内部Observable对象，这个“⽤ 上新的，舍弃旧的”动作，就是切换。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; interval, map, switchAll, take &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">interval</span>(<span class="number">1000</span>)</span><br><span class="line">  .<span class="title function_">pipe</span>(</span><br><span class="line">    <span class="title function_">take</span>(<span class="number">2</span>),</span><br><span class="line">    <span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span></span><br><span class="line">      <span class="title function_">interval</span>(<span class="number">1500</span>).<span class="title function_">pipe</span>(</span><br><span class="line">        <span class="title function_">map</span>(<span class="function">(<span class="params">y</span>) =&gt;</span> x + <span class="string">&quot;:&quot;</span> + y),</span><br><span class="line">        <span class="title function_">take</span>(<span class="number">2</span>)</span><br><span class="line">      )</span><br><span class="line">    ),</span><br><span class="line">    <span class="title function_">switchAll</span>()</span><br><span class="line">  )</span><br><span class="line">  .<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220929182509787.png" alt="image-20220929182509787"></p>
-<h4 id="11-exhaustAll"><a href="#11-exhaustAll" class="headerlink" title="11.exhaustAll"></a>11.exhaustAll</h4><p>连接⾼阶Observable产⽣的内部Observable对象，但是exhaust的策略和switch相反，当内部Observable对象在时间上发⽣重叠时，情景就是前⼀个内部Observable还没有完结，⽽新的Observable又已经产⽣，到底应该选择哪⼀个作为数据源？switch选择新产⽣的内部Observable对象，exhaust则选择前⼀个内部Observable对象。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; exhaustAll, interval, map, take &#125; <span class="keyword">from</span> <span class="string">&quot;rxjs&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">interval</span>(<span class="number">1000</span>)</span><br><span class="line">  .<span class="title function_">pipe</span>(</span><br><span class="line">    <span class="title function_">take</span>(<span class="number">3</span>),</span><br><span class="line">    <span class="title function_">map</span>(<span class="function">(<span class="params">x</span>) =&gt;</span></span><br><span class="line">      <span class="title function_">interval</span>(<span class="number">1500</span>).<span class="title function_">pipe</span>(</span><br><span class="line">        <span class="title function_">map</span>(<span class="function">(<span class="params">y</span>) =&gt;</span> x + <span class="string">&quot;:&quot;</span> + y),</span><br><span class="line">        <span class="title function_">take</span>(<span class="number">2</span>)</span><br><span class="line">      )</span><br><span class="line">    ),</span><br><span class="line">    <span class="title function_">exhaustAll</span>()</span><br><span class="line">  )</span><br><span class="line">  .<span class="title function_">subscribe</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220930162321412.png" alt="image-20220930162321412"></p>
-<p><img src="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/image-20220930162933578.png" alt="image-20220930162933578"></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next</a>
@@ -1445,6 +1384,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">rxjs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">scala</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">大数据</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">flink</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">实时计算</a>
               </li>
              
               <li class="article-tag-list-item">
