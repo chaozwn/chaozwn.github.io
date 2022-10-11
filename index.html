@@ -147,6 +147,90 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-通过aop注解实现防止重复提交" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/11/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E9%98%B2%E6%AD%A2%E9%87%8D%E5%A4%8D%E6%8F%90%E4%BA%A4/">通过aop注解实现防止重复提交</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/11/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E9%98%B2%E6%AD%A2%E9%87%8D%E5%A4%8D%E6%8F%90%E4%BA%A4/" class="archive-article-date">
+  	<time datetime="2022-10-11T01:57:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="通过aop注解实现防止重复提交"><a href="#通过aop注解实现防止重复提交" class="headerlink" title="通过aop注解实现防止重复提交"></a>通过aop注解实现防止重复提交</h1><p>通过注解和aop来实现，后端的重复提交校验</p>
+<h5 id="1-定义防止重复提交的注解"><a href="#1-定义防止重复提交的注解" class="headerlink" title="1.定义防止重复提交的注解"></a>1.定义防止重复提交的注解</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PreventDuplicateSubmissions &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 过期时间 */</span></span><br><span class="line">    <span class="type">long</span> <span class="title function_">expire</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-实现防止重复提交的拦截器"><a href="#2-实现防止重复提交的拦截器" class="headerlink" title="2.实现防止重复提交的拦截器"></a>2.实现防止重复提交的拦截器</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PreventDuplicateSubmissionsInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span> <span class="keyword">private</span> Cache cache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before(&quot;@annotation(preventDuplicateSubmissions)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">interceptor</span><span class="params">(PreventDuplicateSubmissions preventDuplicateSubmissions)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Long</span> <span class="variable">count</span> <span class="operator">=</span> cache.incr(getParams(), preventDuplicateSubmissions.expire());</span><br><span class="line">            <span class="comment">// 如果超过2或者设置的参数，则表示重复提交了</span></span><br><span class="line">            <span class="keyword">if</span> (count.intValue() &gt;= <span class="number">2</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.LIMIT_ERROR);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果参数为空，则表示用户未登录，直接略过，不做处理</span></span><br><span class="line">        <span class="keyword">catch</span> (NullPointerException ignored) &#123;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ServiceException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;防重复提交拦截器异常&quot;</span>, e);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.ERROR);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取表单参数</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String <span class="title function_">getParams</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">HttpServletRequest</span> <span class="variable">request</span> <span class="operator">=</span></span><br><span class="line">                ((ServletRequestAttributes)</span><br><span class="line">                                Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))</span><br><span class="line">                        .getRequest();</span><br><span class="line">        <span class="comment">// 请求地址</span></span><br><span class="line">        <span class="keyword">return</span> request.getRequestURI()</span><br><span class="line">                + Objects.requireNonNull(UserContext.getCurrentUser()).getId()</span><br><span class="line">                + UserContext.getCurrentUser().getUsername();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-具体的使用"><a href="#3-具体的使用" class="headerlink" title="3.具体的使用"></a>3.具体的使用</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PreventDuplicateSubmissions(expire = 5)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/retry&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">retry</span><span class="params">()</span> &#123;</span><br><span class="line">    log.info(<span class="string">&quot;aop执行&quot;</span>);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RetryException</span>(<span class="string">&quot;aop执行&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/10/11/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E9%98%B2%E6%AD%A2%E9%87%8D%E5%A4%8D%E6%8F%90%E4%BA%A4/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-通过aop注解实现自动重试的功能" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1205,94 +1289,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-rxjs探索之路-转换类api" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E8%BD%AC%E6%8D%A2%E7%B1%BBapi/">rxjs探索之路(转换类api)</a>
-    </h1>
-  
-
-        
-        <a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E8%BD%AC%E6%8D%A2%E7%B1%BBapi/" class="archive-article-date">
-  	<time datetime="2022-09-29T06:41:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Rxjs的探索之路-转换类api"><a href="#Rxjs的探索之路-转换类api" class="headerlink" title="Rxjs的探索之路(转换类api)"></a>Rxjs的探索之路(转换类api)</h1><h3 id="Api功能分类"><a href="#Api功能分类" class="headerlink" title="Api功能分类"></a>Api功能分类</h3><ul>
-<li>创建类（creation） </li>
-<li>转化类（transformation） </li>
-<li>过滤类（filtering） </li>
-<li>合并类（combination） </li>
-<li>多播类（multicasting） </li>
-<li>错误处理类（error Handling） </li>
-<li>辅助⼯具类（utility） </li>
-<li>条件分⽀类（conditional&amp;boolean） </li>
-<li>数学和合计类（mathmatical&amp;aggregate）</li>
-</ul>
-<h4 id="转换类-transformation"><a href="#转换类-transformation" class="headerlink" title="转换类(transformation)"></a>转换类(transformation)</h4>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E8%BD%AC%E6%8D%A2%E7%B1%BBapi/">展开全文 >></a>
         </p>
       
 
