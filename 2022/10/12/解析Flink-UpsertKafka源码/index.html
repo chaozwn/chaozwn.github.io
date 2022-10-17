@@ -6,18 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com/child">
-  <title>Archives: 2022 | jayce的博客</title>
+  <title>解析Flink UpsertKafka源码 | jayce的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="熟悉各种大数据框架,喜欢code,目前就职于artefact.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="jayce的博客">
-<meta property="og:url" content="http://yoursite.com/child/archives/2022/page/2/index.html">
+  <meta name="description" content="解析Flink UpsertKafka源码我们由UpsertKafkaDynamicTableFactory来观察这个connector的实现 首先我们查看UpsertKafkaDynamicTableFactory的uml类图关系 从上面我们可以看到DynamicTable一般都需要实现具体的DynamicTableSourceFactory和DynamicTableSinkFactory 笔者">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解析Flink UpsertKafka源码">
+<meta property="og:url" content="http://yoursite.com/child/2022/10/12/%E8%A7%A3%E6%9E%90Flink-UpsertKafka%E6%BA%90%E7%A0%81/index.html">
 <meta property="og:site_name" content="jayce的博客">
-<meta property="og:description" content="熟悉各种大数据框架,喜欢code,目前就职于artefact.">
+<meta property="og:description" content="解析Flink UpsertKafka源码我们由UpsertKafkaDynamicTableFactory来观察这个connector的实现 首先我们查看UpsertKafkaDynamicTableFactory的uml类图关系 从上面我们可以看到DynamicTable一般都需要实现具体的DynamicTableSourceFactory和DynamicTableSinkFactory 笔者">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2022/10/12/%E8%A7%A3%E6%9E%90Flink-UpsertKafka%E6%BA%90%E7%A0%81/image-20221012141427082.png">
+<meta property="article:published_time" content="2022-10-12T06:01:13.000Z">
+<meta property="article:modified_time" content="2022-10-12T07:00:39.138Z">
 <meta property="article:author" content="Jayce Zhao">
-<meta property="article:tag" content="大数据,spark,flink,hadoop,hive,java,scala,go,html,css,javascript,python,react,vue,开发者,前端,后端,编程,代码,开源">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="flink">
+<meta property="article:tag" content="kafka">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2022/10/12/%E8%A7%A3%E6%9E%90Flink-UpsertKafka%E6%BA%90%E7%A0%81/image-20221012141427082.png">
   
     <link rel="alternative" href="/atom.xml" title="jayce的博客" type="application/atom+xml">
   
@@ -145,36 +151,42 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-解析Flink-UpsertKafka源码" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2022" class="archive-year">2022</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/09/DeferredResult%E4%BD%BF%E7%94%A8%E8%A7%A3%E8%AF%BB/" class="archive-article-date">
-  	<time datetime="2022-10-09T03:55:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/09/DeferredResult%E4%BD%BF%E7%94%A8%E8%A7%A3%E8%AF%BB/">DeferredResult使用解读</a>
+    <h1 class="article-title" itemprop="name">
+      解析Flink UpsertKafka源码
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2022/10/12/%E8%A7%A3%E6%9E%90Flink-UpsertKafka%E6%BA%90%E7%A0%81/" class="archive-article-date">
+  	<time datetime="2022-10-12T06:01:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="解析Flink-UpsertKafka源码"><a href="#解析Flink-UpsertKafka源码" class="headerlink" title="解析Flink UpsertKafka源码"></a>解析Flink UpsertKafka源码</h1><p>我们由UpsertKafkaDynamicTableFactory来观察这个connector的实现</p>
+<p>首先我们查看UpsertKafkaDynamicTableFactory的uml类图关系<img src="/2022/10/12/%E8%A7%A3%E6%9E%90Flink-UpsertKafka%E6%BA%90%E7%A0%81/image-20221012141427082.png" alt="image-20221012141427082"></p>
+<p>从上面我们可以看到DynamicTable一般都需要实现具体的DynamicTableSourceFactory和DynamicTableSinkFactory</p>
+<p>笔者这次主要写的是upsert_sert所以我们这次主要看DynamicTableSinkFactory的源码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> DynamicTableSink <span class="title function_">createDynamicTableSink</span><span class="params">(Context context)</span> &#123;</span><br><span class="line">    <span class="comment">// TableFactoryHelper的作用很简洁，用于帮助DynamicTableFactory进行option的格式验证</span></span><br><span class="line">    FactoryUtil.<span class="type">TableFactoryHelper</span> <span class="variable">helper</span> <span class="operator">=</span></span><br><span class="line">            FactoryUtil.createTableFactoryHelper(</span><br><span class="line">                    <span class="built_in">this</span>, autoCompleteSchemaRegistrySubject(context));</span><br><span class="line"></span><br><span class="line">  	<span class="comment">// 获取所有的配置选项</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReadableConfig</span> <span class="variable">tableOptions</span> <span class="operator">=</span> helper.getOptions();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义所有的序列化的key，value format</span></span><br><span class="line">    EncodingFormat&lt;SerializationSchema&lt;RowData&gt;&gt; keyEncodingFormat =</span><br><span class="line">            helper.discoverEncodingFormat(SerializationFormatFactory.class, KEY_FORMAT);</span><br><span class="line">    EncodingFormat&lt;SerializationSchema&lt;RowData&gt;&gt; valueEncodingFormat =</span><br><span class="line">            helper.discoverEncodingFormat(SerializationFormatFactory.class, VALUE_FORMAT);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 校验除了kafak自身参数以外的所有参数</span></span><br><span class="line">    helper.validateExcept(PROPERTIES_PREFIX);</span><br><span class="line">  	<span class="comment">// 这里我们先去下面，看完解析之后，我们在回到这个位置</span></span><br><span class="line">    validateSink(</span><br><span class="line">            tableOptions,</span><br><span class="line">            keyEncodingFormat,</span><br><span class="line">            valueEncodingFormat,</span><br><span class="line">            context.getPrimaryKeyIndexes());</span><br><span class="line"></span><br><span class="line">    Tuple2&lt;<span class="type">int</span>[], <span class="type">int</span>[]&gt; keyValueProjections =</span><br><span class="line">            createKeyValueProjections(context.getCatalogTable());</span><br><span class="line">    <span class="comment">// 获取key前缀</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">String</span> <span class="variable">keyPrefix</span> <span class="operator">=</span> tableOptions.getOptional(KEY_FIELDS_PREFIX).orElse(<span class="literal">null</span>);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">Properties</span> <span class="variable">properties</span> <span class="operator">=</span> getKafkaProperties(context.getCatalogTable().getOptions());</span><br><span class="line"></span><br><span class="line">    <span class="type">Integer</span> <span class="variable">parallelism</span> <span class="operator">=</span> tableOptions.get(SINK_PARALLELISM);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//设置batch参数</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">batchSize</span> <span class="operator">=</span> tableOptions.get(SINK_BUFFER_FLUSH_MAX_ROWS);</span><br><span class="line">    <span class="type">Duration</span> <span class="variable">batchInterval</span> <span class="operator">=</span> tableOptions.get(SINK_BUFFER_FLUSH_INTERVAL);</span><br><span class="line">    <span class="type">SinkBufferFlushMode</span> <span class="variable">flushMode</span> <span class="operator">=</span></span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">SinkBufferFlushMode</span>(batchSize, batchInterval.toMillis());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// use &#123;@link org.apache.kafka.clients.producer.internals.DefaultPartitioner&#125;.</span></span><br><span class="line">    <span class="comment">// it will use hash partition if key is set else in round-robin behaviour.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">KafkaDynamicSink</span>(</span><br><span class="line">            context.getPhysicalRowDataType(),</span><br><span class="line">            context.getPhysicalRowDataType(),</span><br><span class="line">            keyEncodingFormat,</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">EncodingFormatWrapper</span>(valueEncodingFormat),</span><br><span class="line">            keyValueProjections.f0,</span><br><span class="line">            keyValueProjections.f1,</span><br><span class="line">            keyPrefix,</span><br><span class="line">            tableOptions.get(TOPIC).get(<span class="number">0</span>),</span><br><span class="line">            properties,</span><br><span class="line">            <span class="literal">null</span>,</span><br><span class="line">            DeliveryGuarantee.AT_LEAST_ONCE,</span><br><span class="line">            <span class="literal">true</span>,</span><br><span class="line">            flushMode,</span><br><span class="line">            parallelism,</span><br><span class="line">            tableOptions.get(TRANSACTIONAL_ID_PREFIX));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="validateSink"><a href="#validateSink" class="headerlink" title="validateSink"></a>validateSink</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">validateSink</span><span class="params">(</span></span><br><span class="line"><span class="params">        ReadableConfig tableOptions,</span></span><br><span class="line"><span class="params">        Format keyFormat,</span></span><br><span class="line"><span class="params">        Format valueFormat,</span></span><br><span class="line"><span class="params">        <span class="type">int</span>[] primaryKeyIndexes)</span> &#123;</span><br><span class="line">    <span class="comment">// 校验器去校验topic</span></span><br><span class="line">    validateTopic(tableOptions);</span><br><span class="line">    <span class="comment">// 校验对应的key value格式</span></span><br><span class="line">    validateFormat(keyFormat, valueFormat, tableOptions);</span><br><span class="line">    <span class="comment">// upsert是必须要key的</span></span><br><span class="line">    validatePKConstraints(primaryKeyIndexes);</span><br><span class="line">  	<span class="comment">// 是否开启buffer sink模式</span></span><br><span class="line">    validateSinkBufferFlush(tableOptions);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -184,330 +196,124 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flink</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kafka</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/child/2022/10/12/%E8%A7%A3%E6%9E%90Flink-UpsertKafka%E6%BA%90%E7%A0%81/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/10/09/lilishop%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/" class="archive-article-date">
-  	<time datetime="2022-10-09T03:00:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2022/10/17/jupyterhub%E5%85%B3%E8%81%94conda%E7%8E%AF%E5%A2%83/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          jupyterhub关联conda环境
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/10/11/%E7%BC%96%E8%AF%91flink%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">编译flink遇到的问题记录</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/10/09/lilishop%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">lilishop源码解读</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">电商</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/" class="archive-article-date">
-  	<time datetime="2022-09-29T10:04:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E5%90%88%E5%B9%B6%E7%B1%BBapi/">rxjs探索之路(合并类api)</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E8%BD%AC%E6%8D%A2%E7%B1%BBapi/" class="archive-article-date">
-  	<time datetime="2022-09-29T06:41:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF-%E8%BD%AC%E6%8D%A2%E7%B1%BBapi/">rxjs探索之路(转换类api)</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF/" class="archive-article-date">
-  	<time datetime="2022-09-29T02:29:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/29/rxjs%E6%8E%A2%E7%B4%A2%E4%B9%8B%E8%B7%AF/">rxjs探索之路</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rxjs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2022-09-22T12:42:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/">flutter web端解决跨域问题</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" class="archive-article-date">
-  	<time datetime="2022-09-21T12:59:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/21/flutter%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/">flutter开发问题总结</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" class="archive-article-date">
-  	<time datetime="2022-09-16T07:13:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2022/09/16/Mac%E5%88%9D%E5%A7%8B%E5%8C%96flutter%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">Mac初始化flutter开发环境</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2022/">Prev</a><a class="page-number" href="/archives/2022/">1</a><span class="page-number current">2</span>
-    </nav>
   
 
 
@@ -532,8 +338,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
