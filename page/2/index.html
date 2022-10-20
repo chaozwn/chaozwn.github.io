@@ -147,6 +147,201 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-高并发缓存代码怎么写" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/">高并发缓存代码怎么写</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/" class="archive-article-date">
+  	<time datetime="2022-10-09T06:22:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="高并发代码怎么写？"><a href="#高并发代码怎么写？" class="headerlink" title="高并发代码怎么写？"></a>高并发代码怎么写？</h1><p>笔者最近从go zero框架写的代码中获得不小启发。所以写出一个文档用来总结，并且尝试把go zero的这些并发特性，用spring boot实现。</p>
+<ul>
+<li>没有查询条件到Primary映射的缓存<ul>
+<li>通过查询条件到DB去查询行记录，然后<ul>
+<li><strong>把Primary到行记录的缓存写到redis里</strong></li>
+<li><strong>把查询条件到Primary的映射保存到redis里</strong>，<em>框架的Take方法自动做了</em></li>
+</ul>
+</li>
+<li>可能的过期顺序<ul>
+<li>查询条件到Primary的映射缓存未过期<ul>
+<li>Primary到行记录的缓存未过期<ul>
+<li>直接返回缓存行记录</li>
+</ul>
+</li>
+<li>Primary到行记录的缓存已过期<ul>
+<li>通过Primary到DB获取行记录，并写入缓存<ul>
+<li>此时存在的问题是，查询条件到Primary的缓存可能已经快要过期了，短时间内的查询又会触发一次数据库查询</li>
+<li>要避免这个问题，可以让<strong>上面粗体部分</strong>第一个过期时间略长于第二个，比如5秒</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>查询条件到Primary的映射缓存已过期，不管Primary到行记录的缓存是否过期<ul>
+<li>查询条件到Primary的映射会被重新获取，获取过程中会自动写入新的Primary到行记录的缓存，这样两种缓存的过期时间都是刚刚设置</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>有查询条件到Primary映射的缓存<ul>
+<li>没有Primary到行记录的缓存<ul>
+<li>通过Primary到DB查询行记录，并写入缓存</li>
+</ul>
+</li>
+<li>有Primary到行记录的缓存<ul>
+<li>直接返回缓存结果</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="1-第一种情况，基于主键的缓存"><a href="#1-第一种情况，基于主键的缓存" class="headerlink" title="1.第一种情况，基于主键的缓存"></a>1.第一种情况，基于主键的缓存</h1><p><img src="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/image-20221009160400130.png" alt="image-20221009160400130"></p>
+<ol>
+<li>我们基于key，从缓存里查找数据</li>
+<li>如果找到了，就返回数据</li>
+<li>找不到，就去查询数据库查询数据</li>
+<li>查询到数据库的数据之后，根据 key，查询到的value设置到数据库当中</li>
+</ol>
+<h1 id="2-第二种情况，基于唯一索引的缓存逻辑"><a href="#2-第二种情况，基于唯一索引的缓存逻辑" class="headerlink" title="2.第二种情况，基于唯一索引的缓存逻辑"></a>2.第二种情况，基于唯一索引的缓存逻辑</h1><p><img src="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/image-20221009161019005.png" alt="image-20221009161019005"></p>
+<p>代码分为两个block，</p>
+<p>在block1当中：</p>
+<p>找到索引和主键的缓存的情况：</p>
+<ol>
+<li>从redis当中查找唯一索引index-key的缓存，这个时候找到的话，找到的key。</li>
+<li>如果查到了key-value的映射，直接返回value</li>
+<li>如果找不到value，从数据库查询到value</li>
+<li>在redis中设置key-value的缓存</li>
+</ol>
+<p>找不到索引和主键的缓存情况：</p>
+<ol>
+<li>通过唯一索引从数据库查找结果index-value</li>
+<li>设置index-key的缓存</li>
+<li>设置key-value的缓存</li>
+</ol>
+<h4 id="总结下db缓存设计"><a href="#总结下db缓存设计" class="headerlink" title="总结下db缓存设计:"></a>总结下db缓存设计:</h4><ul>
+<li>都是先更新db，然后删除缓存</li>
+<li>缓存只删除不更新</li>
+<li>行记录始终只存储一份，即主键对应行记录</li>
+<li>唯一索引仅缓存主键值，不直接缓存行记录（参考mysql索引思想）</li>
+<li>防缓存穿透设计，默认一分钟</li>
+<li>不缓存多行记录</li>
+</ul>
+<h1 id="3-业务层缓存设计"><a href="#3-业务层缓存设计" class="headerlink" title="3.业务层缓存设计"></a>3.业务层缓存设计</h1><ul>
+<li>增加内存缓存：通过内存缓存来存储当前可能突发访问量比较大的数据，常用的存储方案采用map数据结构来存储，map数据存储实现比较简单，但缓存过期处理则需要增加定时器来处理，另一种方案是通过go-zero库中的 <a target="_blank" rel="noopener" href="https://github.com/zeromicro/go-zero/blob/master/core/collection/cache.go">Cache</a> ，其是专门 用于内存管理.</li>
+<li>采用biz redis,并设置合理的过期时间</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Content <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id         <span class="type">string</span>    <span class="string">`json:&quot;id&quot;`</span></span><br><span class="line">    Title      <span class="type">string</span>    <span class="string">`json:&quot;title&quot;`</span></span><br><span class="line">    Content    <span class="type">string</span>    <span class="string">`json:&quot;content&quot;`</span></span><br><span class="line">    CreateTime time.Time <span class="string">`json:&quot;create_time&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> bizContentCacheKey = <span class="string">`biz#content#cache`</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// AddContent 提供内容存储</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddContent</span><span class="params">(r redis.Redis, c *Content)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    v := compress(c)</span><br><span class="line">    _, err := r.Zadd(bizContentCacheKey, c.CreateTime.UnixNano()/<span class="number">1e6</span>, v)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DelContent 提供内容删除</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DelContent</span><span class="params">(r redis.Redis, c *Content)</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    v := compress(c)</span><br><span class="line">    _, err := r.Zrem(bizContentCacheKey, v)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内容压缩</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">compress</span><span class="params">(c *Content)</span></span> <span class="type">string</span> &#123;</span><br><span class="line">    <span class="comment">// todo: do it yourself</span></span><br><span class="line">    <span class="keyword">var</span> ret <span class="type">string</span></span><br><span class="line">    <span class="keyword">return</span> ret</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内容解压</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">unCompress</span><span class="params">(v <span class="type">string</span>)</span></span> *Content &#123;</span><br><span class="line">    <span class="comment">// todo: do it yourself</span></span><br><span class="line">    <span class="keyword">var</span> ret Content</span><br><span class="line">    <span class="keyword">return</span> &amp;ret</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ListByRangeTime提供根据时间段进行数据查询</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ListByRangeTime</span><span class="params">(r redis.Redis, start, end time.Time)</span></span> ([]*Content, <span class="type">error</span>) &#123;</span><br><span class="line">    kvs, err := r.ZrangebyscoreWithScores(bizContentCacheKey, start.UnixNano()/<span class="number">1e6</span>, end.UnixNano()/<span class="number">1e6</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> list []*Content</span><br><span class="line">    <span class="keyword">for</span> _, kv := <span class="keyword">range</span> kvs &#123;</span><br><span class="line">        data:=unCompress(kv.Key)</span><br><span class="line">        list = <span class="built_in">append</span>(list, data)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="4-内存缓存"><a href="#4-内存缓存" class="headerlink" title="4.内存缓存"></a>4.内存缓存</h1><p>cache 实现的功能包括</p>
+<ul>
+<li>缓存自动失效，可以指定过期时间</li>
+<li>缓存大小限制，可以指定缓存个数</li>
+<li>缓存增删改</li>
+<li>缓存命中率统计</li>
+<li>并发安全</li>
+<li>缓存击穿</li>
+</ul>
+<h1 id="5-缓存击穿"><a href="#5-缓存击穿" class="headerlink" title="5.缓存击穿"></a>5.缓存击穿</h1><p>缓存击穿是指访问某个非常热的数据，缓存不存在，导致大量的请求发送到了数据库，这会导致数据库压力陡增，缓存击穿经常发生在热点数据过期失效时，如下图所示：</p>
+<p><img src="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/image-20221009165326507.png" alt="image-20221009165326507"></p>
+<p>既然缓存击穿经常发生在热点数据过期失效的时候，那么我们不让缓存失效不就好了，每次查询缓存的时候不要使用Exists来判断key是否存在，而是使用Expire给缓存续期，通过Expire返回结果判断key是否存在，既然是热点数据通过不断地续期也就不会过期了</p>
+<p>还有一种简单有效的方法就是通过singleflight来控制，singleflight的原理是当同时有很多请求同时到来时，最终只有一个请求会最终访问到资源，其他请求都会等待结果然后返回。获取商品详情使用singleflight进行保护示例如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *ProductLogic)</span></span> Product(in *product.ProductItemRequest) (*product.ProductItem, <span class="type">error</span>) &#123;</span><br><span class="line">  v, err, _ := l.svcCtx.SingleGroup.Do(fmt.Sprintf(<span class="string">&quot;product:%d&quot;</span>, in.ProductId), <span class="function"><span class="keyword">func</span><span class="params">()</span></span> (<span class="keyword">interface</span>&#123;&#125;, <span class="type">error</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> l.svcCtx.ProductModel.FindOne(l.ctx, in.ProductId)</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">  &#125;</span><br><span class="line">  p := v.(*model.Product)</span><br><span class="line">  <span class="keyword">return</span> &amp;product.ProductItem&#123;</span><br><span class="line">    ProductId: p.Id,</span><br><span class="line">    Name:      p.Name,</span><br><span class="line">  &#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-缓存穿透"><a href="#6-缓存穿透" class="headerlink" title="6.缓存穿透"></a>6.缓存穿透</h1><p>缓存穿透是指要访问的数据既不在缓存中，也不在数据库中，导致请求在访问缓存时，发生缓存缺失，再去访问数据库时，发现数据库中也没有要访问的数据。此时也就没办法从数据库中读出数据再写入缓存来服务后续的请求，类似的请求如果多的话就会给缓存和数据库带来巨大的压力。</p>
+<p>针对缓存穿透问题，解决办法其实很简单，就是缓存一个空值，避免每次都透传到数据库，缓存的时间可以设置短一点，比如1分钟，其实上文已经有提到了，当我们访问不存在的数据的时候，go-zero框架会帮我们自动加上空缓存，比如我们访问id为999的商品，该商品在数据库中是不存在的。</p>
+<h1 id="7-缓存雪崩"><a href="#7-缓存雪崩" class="headerlink" title="7.缓存雪崩"></a>7.缓存雪崩</h1><p>缓存雪崩时指大量的的应用请求无法在Redis缓存中进行处理，紧接着应用将大量的请求发送到数据库，导致数据库被打挂，好惨呐！！缓存雪崩一般是由两个原因导致的，应对方案也不太一样。</p>
+<p>第一个原因是：缓存中有大量的数据同时过期，导致大量的请求无法得到正常处理。</p>
+<p><strong>针对大量数据同时失效带来的缓存雪崩问题，一般的解决方案是要避免大量的数据设置相同的过期时间，如果业务上的确有要求数据要同时失效，那么可以在过期时间上加一个较小的随机数，这样不同的数据过期时间不同，但差别也不大，避免大量数据同时过期，也基本能满足业务的需求。</strong></p>
+<p>第二个原因是：Redis出现了宕机，没办法正常响应请求了，这就会导致大量请求直接打到数据库，从而发生雪崩</p>
+<p><strong>针对这类原因一般我们需要让我们的数据库支持熔断，让数据库压力比较大的时候就触发熔断，丢弃掉部分请求，当然熔断是对业务有损的。</strong></p>
+<p>在go-zero的数据库客户端是支持熔断的，如下在ExecCtx方法中使用熔断进行保护</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *commonSqlConn)</span></span> ExecCtx(ctx context.Context, q <span class="type">string</span>, args ...<span class="keyword">interface</span>&#123;&#125;) (</span><br><span class="line">  result sql.Result, err <span class="type">error</span>) &#123;</span><br><span class="line">  ctx, span := startSpan(ctx, <span class="string">&quot;Exec&quot;</span>)</span><br><span class="line">  <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    endSpan(span, err)</span><br><span class="line">  &#125;()</span><br><span class="line"></span><br><span class="line">  err = db.brk.DoWithAcceptable(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> <span class="type">error</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> conn *sql.DB</span><br><span class="line">    conn, err = db.connProv()</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      db.onError(err)</span><br><span class="line">      <span class="keyword">return</span> err</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    result, err = exec(ctx, conn, q, args...)</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  &#125;, db.acceptable)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-缓存一致性-TODO"><a href="#8-缓存一致性-TODO" class="headerlink" title="8.缓存一致性(TODO)"></a>8.缓存一致性(TODO)</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">高并发</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/10/09/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%BC%93%E5%AD%98%E4%BB%A3%E7%A0%81%E6%80%8E%E4%B9%88%E5%86%99/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-DeferredResult使用解读" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1066,6 +1261,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">spring boot</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">css</a>
               </li>
              
               <li class="article-tag-list-item">
