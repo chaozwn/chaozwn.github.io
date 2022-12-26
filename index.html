@@ -188,7 +188,9 @@
 <p><code>*</code>移动到下一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续<br><code>#</code>移动到上一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续</p>
 <p><code>f&#123;motion&#125;</code>移动到 motion 到单词上,从左往右。<code>F&#123;motion&#125;</code>移动到 motion 到单词上,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>t&#123;motion&#125;</code>移动到 motion 到单词之前,从左往右。<code>T&#123;motion&#125;</code>移动到 motion 到单词之后,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>v/c/d</code>可以结合<code>f</code>选中&#x2F;删除到范围都是从当前位置到搜索到的位置</p>
 <h4 id="复制指令"><a href="#复制指令" class="headerlink" title="复制指令"></a>复制指令</h4><p><code>yy</code>复制当前行,同时还可以推理出<code>yw</code>复制到下一个单词为止,<code>yk</code>,<code>yl</code>,<code>yh</code>,<code>yj</code>,<code>yb</code>,<code>ye</code>,<code>y$</code>等</p>
-<h4 id="删除指令"><a href="#删除指令" class="headerlink" title="删除指令"></a>删除指令</h4><p><code>dd</code>删除当前行,同时还可以推理出<code>dw</code>删除到下一个单词为止,<code>dk</code>,<code>dl</code>,<code>dh</code>,<code>dj</code>,<code>db</code>,<code>de</code>,<code>d$</code>等<br><code>x</code>删除光标所在的字符,<code>X</code>删除光标前的字符</p>
+<h4 id="删除指令"><a href="#删除指令" class="headerlink" title="删除指令"></a>删除指令</h4><p><code>dd</code>删除当前行,同时还可以推理出<code>dw</code>删除到下一个单词为止,<code>dk</code>,<code>dl</code>,<code>dh</code>,<code>dj</code>,<code>db</code>,<code>de</code>,<code>d$</code>等</p>
+<p><code>D</code>删除光标之后的单词</p>
+<p><code>x</code>删除光标所在的字符,<code>X</code>删除光标前的字符</p>
 <h4 id="粘贴指令"><a href="#粘贴指令" class="headerlink" title="粘贴指令"></a>粘贴指令</h4><p><code>p</code>在指针后面粘贴,<code>P</code>在指针前面粘贴</p>
 <h4 id="替换指令"><a href="#替换指令" class="headerlink" title="替换指令"></a>替换指令</h4><p><code>r</code>替换光标所在的字符,<code>R</code>逐个替换字符,可以依次修改整个语句</p>
 <h4 id="撤销指令"><a href="#撤销指令" class="headerlink" title="撤销指令"></a>撤销指令</h4><p><code>u</code>撤销,<code>U</code>撤销当前行的所有操作<br><code>ctrl</code> + <code>r</code> redo 重做,恢复</p>
