@@ -16,7 +16,7 @@
 <meta property="og:description" content="1brew install --cask keycastr  .ideavimrc12345let context_aware&#x3D;0let keep_input_source_in_normal&#x3D;&quot;com.apple.keylayout.ABC&quot;let keep_input_source_in_insert&#x3D;&quot;com.sogou.inputmethod.sogou.pi">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-26T04:50:54.000Z">
-<meta property="article:modified_time" content="2023-01-29T04:19:47.188Z">
+<meta property="article:modified_time" content="2023-01-29T16:36:14.993Z">
 <meta property="article:author" content="Jayce Zhao">
 <meta property="article:tag" content="vim">
 <meta name="twitter:card" content="summary">
@@ -198,8 +198,8 @@
 <h4 id="替换指令"><a href="#替换指令" class="headerlink" title="替换指令"></a>替换指令</h4><p><code>r</code>替换光标所在的字符,<code>R</code>逐个替换字符,可以依次修改整个语句</p>
 <h4 id="撤销指令"><a href="#撤销指令" class="headerlink" title="撤销指令"></a>撤销指令</h4><p><code>u</code>撤销,<code>U</code>撤销当前行的所有操作<br><code>ctrl</code> + <code>r</code> redo 重做,恢复</p>
 <h3 id="可视化模式"><a href="#可视化模式" class="headerlink" title="可视化模式"></a>可视化模式</h3><p><code>v</code> 基于字符的可视化选择<br><code>V</code> 基于行的可视化选择<br><code>o</code> 在 v 可视化状态下，可以切换可视区域光标的<code>起始</code>&#x2F;<code>终止</code>位置<br><code>O</code> 光标移动到选中文本的另一个角落<br><code>ctrl</code> + <code>v</code> 基于块的可视化选择,用于处理多行文本<br><code>gv</code> 回到上一次选中到选择区域<br><code>gb</code> 快速选中当前单词,再次按<code>gb</code>继续往下选择相同的单词,然后可以统一修改</p>
-<p><code>ctrl</code> + <code>q</code> 进入多选择模式，可以有多指针</p>
-<p>在选中模式下,可以使用的参数<br><code>c</code>删除选中内容，同时进入 insert 模式<br><code>A</code>和<code>I</code>多行编辑的时候可以使用<br><code>d</code>删除选中的文本<br><code>D</code>删除选中部分的文本,和<code>d</code>不同之处在于,既是选中文本中有些字符所在到行没有被选中,删除时也会一并删除<br><code>y</code>将选中部分复制到剪贴板<br><code>p</code>将剪贴板内容粘贴到光标之后,<code>P</code>将剪贴板内容粘贴到光标之前<br><code>u</code>将选中内容全部改成小写,<code>U</code>将选中内容全部改成大写<br><code>&gt;</code>将选中内容右移一个 tab 键规定的长度<br><code>&lt;</code>将选中内容左移一个 tab 键规定的长度</p>
+<h4 id="在选中模式下-可以使用的参数"><a href="#在选中模式下-可以使用的参数" class="headerlink" title="在选中模式下,可以使用的参数"></a>在选中模式下,可以使用的参数</h4><p><code>c</code>删除选中内容，同时进入 insert 模式<br><code>A</code>和<code>I</code>多行编辑的时候可以使用<br><code>d</code>删除选中的文本<br><code>D</code>删除选中部分的文本,和<code>d</code>不同之处在于,既是选中文本中有些字符所在到行没有被选中,删除时也会一并删除<br><code>y</code>将选中部分复制到剪贴板<br><code>p</code>将剪贴板内容粘贴到光标之后,<code>P</code>将剪贴板内容粘贴到光标之前<br><code>u</code>将选中内容全部改成小写,<code>U</code>将选中内容全部改成大写<br><code>&gt;</code>将选中内容右移一个 tab 键规定的长度<br><code>&lt;</code>将选中内容左移一个 tab 键规定的长度</p>
+<h4 id="多指针模式"><a href="#多指针模式" class="headerlink" title="多指针模式"></a>多指针模式</h4><p><code>ctrl</code> + <code>q</code> 进入多选择模式，可以有多指针</p>
 <h3 id="选中整体向上或者向下移动几行"><a href="#选中整体向上或者向下移动几行" class="headerlink" title="选中整体向上或者向下移动几行"></a>选中整体向上或者向下移动几行</h3><p>假设光标在你想要移动的那一行上。</p>
 <p>上下移动<code>:m</code>移动</p>
 <p><code>:m +1</code> – 向下移动1行</p>
