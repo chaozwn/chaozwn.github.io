@@ -16,7 +16,7 @@
 <meta property="og:description" content="1brew install --cask keycastr  .ideavimrc12345let context_aware&#x3D;0let keep_input_source_in_normal&#x3D;&quot;com.apple.keylayout.ABC&quot;let keep_input_source_in_insert&#x3D;&quot;com.sogou.inputmethod.sogou.pi">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-26T04:50:54.000Z">
-<meta property="article:modified_time" content="2022-12-26T17:08:06.038Z">
+<meta property="article:modified_time" content="2023-01-29T04:19:47.188Z">
 <meta property="article:author" content="Jayce Zhao">
 <meta property="article:tag" content="vim">
 <meta name="twitter:card" content="summary">
@@ -176,6 +176,7 @@
 <h3 id="屏幕移动相关操作"><a href="#屏幕移动相关操作" class="headerlink" title="屏幕移动相关操作"></a>屏幕移动相关操作</h3><p><code>H</code>,<code>M</code>,<code>L</code>指针跳转到屏幕上方(Head),中间(Middle)和底部(Lower)<br><code>zt</code>将当前行置于屏幕的最上方<br><code>zz</code>将当前行置于屏幕的中间<br><code>zb</code>将当前行置于屏幕的最下方</p>
 <p><code>ctrl</code> + <code>g</code>显示当前位置<br><code>ctrl</code> + <code>u</code>&#x2F;<code>d</code> 向上下滚动半屏<br><code>ctrl</code> + <code>y</code>&#x2F;<code>e</code> 向上下滚动一行<br><code>ctrl</code> + <code>b</code>&#x2F;<code>f</code> 向上下滚动一屏</p>
 <p><code>gg</code>返回文章到开头<br><code>number</code> + <code>G</code>&#x2F;<code>gg</code>可以到达指定到行数<br><code>ctrl</code> + <code>o</code>快速返回上一个指针位置</p>
+<p><code>ctrl</code> + <code>i</code>快递前进到上一个指针位置</p>
 <h3 id="由-normal-模式-gt-insert-模式"><a href="#由-normal-模式-gt-insert-模式" class="headerlink" title="由 normal 模式 -&gt; insert 模式:"></a>由 normal 模式 -&gt; insert 模式:</h3><p><code>i</code>在指定单词<code>前面</code>插入,<code>I</code>在指定当行<code>最前面</code>插入<br><code>a</code>在指定单词<code>后面</code>插入,<code>A</code>在指定当行<code>最后面</code>插入<br><code>o</code>在指定行下方<code>插入</code>,<code>O</code>在指定行<code>上方</code>插入<br><code>s</code>删除光标所在字符,并进入插入模式。<code>S</code>删除光标所在行,并进入插入模式<br><code>cc</code>删除整行,并进入<code>插入模式</code>(此处等于<code>S</code>)。<code>C</code>删除光标往后的字符并把输入符号向前移动一个字符,<code>ck</code>,<code>cl</code>,<code>ch</code>,<code>cj</code>,<code>cb</code>,<code>ce</code>,<code>c$</code>等</p>
 <h3 id="由-insert-模式-gt-normal-模式"><a href="#由-insert-模式-gt-normal-模式" class="headerlink" title="由 insert 模式 -&gt; normal 模式"></a>由 insert 模式 -&gt; normal 模式</h3><p><code>ctrl</code>+<code>[</code>退出 insert mode</p>
 <h3 id="normal-模式"><a href="#normal-模式" class="headerlink" title="normal 模式"></a>normal 模式</h3><h4 id="移动光标"><a href="#移动光标" class="headerlink" title="移动光标"></a>移动光标</h4><p><code>单词</code>: 字母组成到单词、括号等<br><code>字串</code>: 空格、<code>tab</code>、换行分割的字符</p>
@@ -196,8 +197,20 @@
 <h4 id="粘贴指令"><a href="#粘贴指令" class="headerlink" title="粘贴指令"></a>粘贴指令</h4><p><code>p</code>在指针后面粘贴,<code>P</code>在指针前面粘贴</p>
 <h4 id="替换指令"><a href="#替换指令" class="headerlink" title="替换指令"></a>替换指令</h4><p><code>r</code>替换光标所在的字符,<code>R</code>逐个替换字符,可以依次修改整个语句</p>
 <h4 id="撤销指令"><a href="#撤销指令" class="headerlink" title="撤销指令"></a>撤销指令</h4><p><code>u</code>撤销,<code>U</code>撤销当前行的所有操作<br><code>ctrl</code> + <code>r</code> redo 重做,恢复</p>
-<h3 id="可视化模式"><a href="#可视化模式" class="headerlink" title="可视化模式"></a>可视化模式</h3><p><code>v</code> 基于字符的可视化选择<br><code>V</code> 基于行的可视化选择<br><code>o</code> 在 v 可视化状态下，可以切换可视区域光标的<code>起始</code>&#x2F;<code>终止</code>位置<br><code>ctrl</code> + <code>v</code> 基于块的可视化选择,用于处理多行文本<br><code>gv</code> 回到上一次选中到选择区域<br><code>gb</code> 快速选中当前单词,再次按<code>gb</code>继续往下选择相同的单词</p>
+<h3 id="可视化模式"><a href="#可视化模式" class="headerlink" title="可视化模式"></a>可视化模式</h3><p><code>v</code> 基于字符的可视化选择<br><code>V</code> 基于行的可视化选择<br><code>o</code> 在 v 可视化状态下，可以切换可视区域光标的<code>起始</code>&#x2F;<code>终止</code>位置<br><code>O</code> 光标移动到选中文本的另一个角落<br><code>ctrl</code> + <code>v</code> 基于块的可视化选择,用于处理多行文本<br><code>gv</code> 回到上一次选中到选择区域<br><code>gb</code> 快速选中当前单词,再次按<code>gb</code>继续往下选择相同的单词,然后可以统一修改</p>
+<p><code>ctrl</code> + <code>q</code> 进入多选择模式，可以有多指针</p>
 <p>在选中模式下,可以使用的参数<br><code>c</code>删除选中内容，同时进入 insert 模式<br><code>A</code>和<code>I</code>多行编辑的时候可以使用<br><code>d</code>删除选中的文本<br><code>D</code>删除选中部分的文本,和<code>d</code>不同之处在于,既是选中文本中有些字符所在到行没有被选中,删除时也会一并删除<br><code>y</code>将选中部分复制到剪贴板<br><code>p</code>将剪贴板内容粘贴到光标之后,<code>P</code>将剪贴板内容粘贴到光标之前<br><code>u</code>将选中内容全部改成小写,<code>U</code>将选中内容全部改成大写<br><code>&gt;</code>将选中内容右移一个 tab 键规定的长度<br><code>&lt;</code>将选中内容左移一个 tab 键规定的长度</p>
+<h3 id="选中整体向上或者向下移动几行"><a href="#选中整体向上或者向下移动几行" class="headerlink" title="选中整体向上或者向下移动几行"></a>选中整体向上或者向下移动几行</h3><p>假设光标在你想要移动的那一行上。</p>
+<p>上下移动<code>:m</code>移动</p>
+<p><code>:m +1</code> – 向下移动1行</p>
+<p><code>:m -2</code> – 向上移动1行</p>
+<p>（请注意，您可以用任何数字replace+1，具体取决于您想要向上或向下移动的行数，即+2会将其向下移动2行，-3会将其向上移动2行）</p>
+<p>移动到特定的行</p>
+<p><code>:set number</code> – 显示号码行（更容易看到你移动到哪里）</p>
+<p><code>:m 3</code> – 在第三行之后移动行（将3replace为您想要的行）</p>
+<p>移动多行：</p>
+<p><code>V</code> （即Shift – V ）并上下移动select器以在VIM中select多行</p>
+<p>一旦选中hit<code>:</code>并运行上面的命令， <code>m +1</code>等</p>
 <h3 id="文本对象操作"><a href="#文本对象操作" class="headerlink" title="文本对象操作"></a>文本对象操作</h3><p>[number] <command> [text object] number 表示次数，command 表示命令,<code>d</code>,<code>c</code>,<code>y</code>,text object 是要操作的文本对象，比如单词 w,句子 s,段落 p</p>
 <h4 id="内-x2F-外部"><a href="#内-x2F-外部" class="headerlink" title="内&#x2F;外部:"></a>内&#x2F;外部:</h4><p><code>i</code>: 内部<br><code>a</code>: 外部</p>
 <h4 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h4><p><code>w</code>: 一个单词, 内部: 单词本身, 外部: 单词本身 + 左右空格, 优先空格<br><code>W</code>: 一个字串, 内部: 字串本身, 外部: 单词本身 + 左右空格, 优先空格<br><code>(</code>,<code>)</code>,<code>b</code>: 一对[],内部: 括号内部, 外部: 括号以及括号内部<br><code>[</code>,<code>]</code>: 一对[],内部: 括号内部, 外部: 括号以及括号内部<br><code>&#123;</code>,<code>&#125;</code>,<code>B</code>: 一对{},内部: 括号内部, 外部: 括号以及括号内部<br><code>&lt;</code>,<code>&gt;</code>: 一对&lt;&gt;,内部: 括号内部, 外部: 括号以及括号内部<br><code>t</code>: html 文本<br><code>&#39;</code>: 一对单引号,内部: 括号内部, 外部: 括号以及括号内部<br><code>&quot;</code>: 一对双引号,内部: 括号内部, 外部: 括号以及括号内部</p>
@@ -226,6 +239,8 @@
 <p>:s&#x2F;old&#x2F;new - 用 new 替换当前行第一个 old。<br>:s&#x2F;old&#x2F;new&#x2F;g - 用 new 替换当前行所有的 old。<br>:n1,n2s&#x2F;old&#x2F;new&#x2F;g - 用 new 替换文件 n1 行到 n2 行所有的 old。<br>:%s&#x2F;old&#x2F;new&#x2F;g - 用 new 替换文件中所有的 old。<br>:%s&#x2F;^&#x2F;xxx&#x2F;g - 在每一行的行首插入 xxx，^表示行首。<br>:%s&#x2F;$&#x2F;xxx&#x2F;g - 在每一行的行尾插入xxx，$表示行尾。<br>有替换命令末尾加上 c，每个替换都将需要用户确认。 如：%s&#x2F;old&#x2F;new&#x2F;gc，加上 i 则忽略大小写(ignore)。</p>
 <h3 id="宏操作"><a href="#宏操作" class="headerlink" title="宏操作"></a>宏操作</h3><p><code>q</code> 录制和结束录制宏<br><code>q[a-z]</code>选择要保存的寄存器,把录制的命令保存到其中<br><code>@[a-z]</code>回放寄存器到一系列命令</p>
 <p><code>ctrl</code> + <code>v</code> 选中所有, <code>:normal @a</code>所有行执行宏</p>
+<h3 id="快速替换一个单词"><a href="#快速替换一个单词" class="headerlink" title="快速替换一个单词"></a>快速替换一个单词</h3><p><code>yiw</code>复制指定单词</p>
+<p><code>viwp</code>粘贴指定单词</p>
 
       
 
@@ -354,7 +369,7 @@
   <div class="outer">
     <div id="footer-info">
       <div class="footer-left">
-        &copy; 2022 Jayce Zhao 著作权归作者所有
+        &copy; 2023 Jayce Zhao 著作权归作者所有
       </div>
       <div class="footer-right">
         <!-- <a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten -->
