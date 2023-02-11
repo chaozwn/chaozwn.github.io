@@ -147,6 +147,109 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-如何使用great-expectations做数据校验" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/">如何使用great_expectations做数据校验</a>
+    </h1>
+  
+
+        
+        <a href="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/" class="archive-article-date">
+  	<time datetime="2023-02-02T12:03:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="使用great-expectations做数据校验"><a href="#使用great-expectations做数据校验" class="headerlink" title="使用great_expectations做数据校验"></a>使用great_expectations做数据校验</h1><p>由于网上的关于数据质量平台的方案比较少，目前<a target="_blank" rel="noopener" href="https://github.com/datavines-ops/datavines">datavines</a>看上去很不错，但是目前这个项目还在起步阶段，有兴趣的话，可以一起参与这个项目共建。</p>
+<p>所以笔者暂时先用great_expectations来尝试做质量校验。</p>
+<h3 id="1-安装great-expectations"><a href="#1-安装great-expectations" class="headerlink" title="1.安装great_expectations"></a>1.安装great_expectations</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 为了方便控制环境，我这边使用conda 创建python38的环境</span><br><span class="line">pip install great_expectations</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-创建mysql"><a href="#2-创建mysql" class="headerlink" title="2.创建mysql"></a>2.创建mysql</h3><p>为了方便，我这边直接使用docker创建一个mysql</p>
+<p><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202201547736.png" alt="image-20230202201547736"></p>
+<h3 id="3-安装python需要的mysql依赖"><a href="#3-安装python需要的mysql依赖" class="headerlink" title="3.安装python需要的mysql依赖"></a>3.安装python需要的mysql依赖</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install sqlalchemy</span><br><span class="line">pip install PyMySQL</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-初始化great-expectations"><a href="#4-初始化great-expectations" class="headerlink" title="4.初始化great_expectations"></a>4.初始化great_expectations</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">great_expectations init</span><br></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202212758768.png" alt="image-20230202212758768"></h3><h3 id="5-用great-expectations-cli添加新数据源"><a href="#5-用great-expectations-cli添加新数据源" class="headerlink" title="5.用great_expectations cli添加新数据源"></a>5.用great_expectations cli添加新数据源</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">great_expectations datasource new</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202212936529.png" alt="image-20230202212936529"></p>
+<p><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202212958734.png" alt="image-20230202212958734"></p>
+<p>连接会自动跳转到一个jupyter notebook</p>
+<p><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202213040721.png" alt="image-20230202213040721"></p>
+<p>我们依次完成对应的配置。最后的结果图：</p>
+<p><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202213232507.png" alt="image-20230202213232507"></p>
+<p>我们打开文件夹删除掉添加用到notebook</p>
+<p><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202213453391.png" alt="image-20230202213453391"></p>
+<h3 id="6-创建Expectations"><a href="#6-创建Expectations" class="headerlink" title="6.创建Expectations"></a>6.创建Expectations</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">great_expectations suite new</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/image-20230202214009430.png" alt="image-20230202214009430"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这里有一个issue，目前我已经提上去了，还在和官方交流中</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/great-expectations/great_expectations/issues/7030">https://github.com/great-expectations/great_expectations/issues/7030</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据质量</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-vim命令明细" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -187,8 +290,10 @@
 <p><code>e</code>移动到单词的结尾(从左往右移动)<br><code>w</code>移动到单词的开头(从左往右移动)<br><code>b</code>移动到单词的开头(从右往左移动)<br><code>ge</code>移动到上个单词的结尾(从右往左移动)</p>
 <p><code>E</code>移动到字串的结尾(从左往右移动)<br><code>W</code>移动到字串的开头(从左往右移动)<br><code>B</code>移动到字串的开头(从右往左移动)<br><code>gE</code>移动到字串的结尾(从右往左移动)</p>
 <p><code>%</code>移动到与制匹配到括号上去,比如(),[],{}</p>
+<p><code>&#125;</code>跳转到下一个段落</p>
 <p>常用组合按键: <code>v</code>,<code>c</code>,<code>d</code>可以与方向移动键做出组合,下面是常用示例<br><code>cw</code>删除当前单词并进入<code>insert</code>模式,会保留下个单词前的空格<br><code>dw</code>删除当前单词，不会保留下个单词前的空格<br><code>ea</code>在当前单词的结尾处添加<br><code>d^</code>删除到行首，光标所在单词不会删除</p>
-<h4 id="其他常用指令"><a href="#其他常用指令" class="headerlink" title="其他常用指令"></a>其他常用指令</h4><p><code>~</code>字母转换大小写<br><code>J</code>删除换行符,可以使下一行合并上来,<code>nJ</code>连接后面的 n 行<br><code>.</code>重复上一次修改的操作</p>
+<h4 id="其他常用指令"><a href="#其他常用指令" class="headerlink" title="其他常用指令"></a>其他常用指令</h4><p><code>~</code>字母转换大小写<br><code>J</code>删除换行符,可以使下一行合并上来,<code>nJ</code>连接后面的 n 行<br><code>.</code>记住上一次修改的动作，并重复</p>
+<p><code>&gt;</code>添加缩进. <code>&gt;&gt;</code>缩进一个tab，<code>&gt;G</code>到末尾的所有行缩进</p>
 <h4 id="搜索指令"><a href="#搜索指令" class="headerlink" title="搜索指令"></a>搜索指令</h4><p><code>/</code>向后查找(模糊搜索)<br><code>?</code>向前查找(模糊搜索)<br><code>v/c/d</code>可以结合<code>/</code>,<code>?</code>进行选中和删除范围</p>
 <p><code>*</code>移动到下一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续<br><code>#</code>移动到上一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续</p>
 <p><code>f&#123;motion&#125;</code>移动到 motion 到单词上,从左往右。<code>F&#123;motion&#125;</code>移动到 motion 到单词上,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>t&#123;motion&#125;</code>移动到 motion 到单词之前,从左往右。<code>T&#123;motion&#125;</code>移动到 motion 到单词之后,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>v/c/d</code>可以结合<code>f</code>选中&#x2F;删除到范围都是从当前位置到搜索到的位置</p>
@@ -243,6 +348,56 @@
 <p><code>ctrl</code> + <code>v</code> 选中所有, <code>:normal @a</code>所有行执行宏</p>
 <h3 id="快速替换一个单词"><a href="#快速替换一个单词" class="headerlink" title="快速替换一个单词"></a>快速替换一个单词</h3><p><code>yiw</code>复制指定单词</p>
 <p><code>viwp</code>粘贴指定单词</p>
+<h2 id="小技巧Tips"><a href="#小技巧Tips" class="headerlink" title="小技巧Tips"></a>小技巧Tips</h2><ol>
+<li><p>熟练应用<code>.</code>，他会记住上一次的动作</p>
+</li>
+<li><p><code>a</code> + <code>$</code> +<code>esc</code>使用一次之后，可用<code>.</code>代替，不要自我重复</p>
+</li>
+<li><p>减少无关的移动，多使用复合命令</p>
+<table>
+<thead>
+<tr>
+<th>复合命令</th>
+<th>等效长命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C</td>
+<td>c$</td>
+</tr>
+<tr>
+<td>s</td>
+<td>Cl</td>
+</tr>
+<tr>
+<td>S</td>
+<td>^C</td>
+</tr>
+<tr>
+<td>I</td>
+<td>^i</td>
+</tr>
+<tr>
+<td>A</td>
+<td>$a</td>
+</tr>
+<tr>
+<td>o</td>
+<td>A</td>
+</tr>
+<tr>
+<td>O</td>
+<td>ko</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><code>f</code>和<code>t</code>可以通过<code>;</code>和<code>,</code>进行重复和回退</p>
+</li>
+<li><p><code>gv</code> 回到上一次选中到选择区域</p>
+</li>
+<li><p>可视化模式下<code>U</code>可以把选中内容大写</p>
+</li>
+</ol>
 
       
 
@@ -1020,109 +1175,6 @@
 
 
   
-    <article id="post-Redis使用Lua脚本保证原子性" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/">Redis使用Lua脚本保证原子性</a>
-    </h1>
-  
-
-        
-        <a href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/" class="archive-article-date">
-  	<time datetime="2022-10-10T09:25:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Redis使用Lua脚本保证原子性"><a href="#Redis使用Lua脚本保证原子性" class="headerlink" title="Redis使用Lua脚本保证原子性"></a>Redis使用Lua脚本保证原子性</h1><p>Redis使用同一个Lua解释器来执行所有命令，同时，Redis保证以一种原子性的方式来执行脚本：当lua脚本在执行的时候，不会有其他脚本和命令同时执行，这种语义类似于 MULTI&#x2F;EXEC。从别的客户端的视角来看，一个lua脚本要么不可见，要么已经执行完。</p>
-<p>然而这也意味着，执行一个较慢的lua脚本是不建议的，由于脚本的开销非常低，构造一个快速执行的脚本并非难事。但是你要注意到，当你正在执行一个比较慢的脚本时，所以其他的客户端都无法执行命令。</p>
-<h2 id="我们通过lua和java注解实现一个流量限速功能"><a href="#我们通过lua和java注解实现一个流量限速功能" class="headerlink" title="我们通过lua和java注解实现一个流量限速功能"></a>我们通过lua和java注解实现一个流量限速功能</h2><h5 id="1-创建一个limit-lua"><a href="#1-创建一个limit-lua" class="headerlink" title="1.创建一个limit.lua"></a>1.创建一个limit.lua</h5><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> c</span><br><span class="line">c = redis.call(<span class="string">&#x27;get&#x27;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="comment">-- 调用不超过最大值，则直接返回</span></span><br><span class="line"><span class="keyword">if</span> c <span class="keyword">and</span> <span class="built_in">tonumber</span>(c) &gt; <span class="built_in">tonumber</span>(ARGV[<span class="number">1</span>]) <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment">-- 执行计算器自加</span></span><br><span class="line">c = redis.call(<span class="string">&#x27;incr&#x27;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">tonumber</span>(c) == <span class="number">1</span> <span class="keyword">then</span></span><br><span class="line"><span class="comment">-- 从第一次调用开始限流，设置对应键值的过期</span></span><br><span class="line">    redis.call(<span class="string">&#x27;expire&#x27;</span>,KEYS[<span class="number">1</span>],ARGV[<span class="number">2</span>])</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">return</span> c;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-java代码读取lua脚本，自动注入"><a href="#2-java代码读取lua脚本，自动注入" class="headerlink" title="2.java代码读取lua脚本，自动注入"></a>2.java代码读取lua脚本，自动注入</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 流量限制脚本</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> DefaultRedisScript&lt;Long&gt; <span class="title function_">limitScript</span><span class="params">()</span> &#123;</span><br><span class="line">    DefaultRedisScript&lt;Long&gt; redisScript = <span class="keyword">new</span> <span class="title class_">DefaultRedisScript</span>&lt;&gt;();</span><br><span class="line">    redisScript.setScriptSource(</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">ResourceScriptSource</span>(<span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(<span class="string">&quot;script/limit.lua&quot;</span>)));</span><br><span class="line">    redisScript.setResultType(Long.class);</span><br><span class="line">    <span class="keyword">return</span> redisScript;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-创建注解LimitPoint"><a href="#3-创建注解LimitPoint" class="headerlink" title="3.创建注解LimitPoint"></a>3.创建注解LimitPoint</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 限流注解</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> jayce</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.METHOD, ElementType.TYPE&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> LimitPoint &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 资源的名字 无实际意义，但是可以用于排除异常</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">name</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 资源的key</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;如果下方 limitType 值为自定义，那么全局限流参数来自于此 如果limitType 为ip，则限流条件 为 key+ip</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">key</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Key的prefix redis前缀，可选</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">prefix</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 给定的时间段 单位秒</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">period</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">60</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 最多的访问限制次数</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">limit</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 类型 ip限制 还是自定义key值限制 建议使用ip，自定义key属于全局限制，ip则是某节点设置，通常情况使用IP</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> LimitType</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    LimitTypeEnums <span class="title function_">limitType</span><span class="params">()</span> <span class="keyword">default</span> LimitTypeEnums.IP;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-aop拦截操作"><a href="#4-aop拦截操作" class="headerlink" title="4.aop拦截操作"></a>4.aop拦截操作</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Before(&quot;@annotation(limitPointAnnotation)&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">interceptor</span><span class="params">(LimitPoint limitPointAnnotation)</span> &#123;</span><br><span class="line">    <span class="type">LimitTypeEnums</span> <span class="variable">limitTypeEnums</span> <span class="operator">=</span> limitPointAnnotation.limitType();</span><br><span class="line"></span><br><span class="line">    String key;</span><br><span class="line">    <span class="type">int</span> <span class="variable">limitPeriod</span> <span class="operator">=</span> limitPointAnnotation.period();</span><br><span class="line">    <span class="type">int</span> <span class="variable">limitCount</span> <span class="operator">=</span> limitPointAnnotation.limit();</span><br><span class="line">    <span class="keyword">if</span> (limitTypeEnums == LimitTypeEnums.CUSTOMER) &#123;</span><br><span class="line">        key = limitPointAnnotation.key();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        key =</span><br><span class="line">                limitPointAnnotation.key()</span><br><span class="line">                        + IpUtils.getIpAddress(</span><br><span class="line">                                ((ServletRequestAttributes)</span><br><span class="line">                                                Objects.requireNonNull(</span><br><span class="line">                                                        RequestContextHolder</span><br><span class="line">                                                                .getRequestAttributes()))</span><br><span class="line">                                        .getRequest());</span><br><span class="line">    &#125;</span><br><span class="line">    ImmutableList&lt;String&gt; keys =</span><br><span class="line">            ImmutableList.of(StringUtils.join(limitPointAnnotation.prefix(), key));</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">Number</span> <span class="variable">count</span> <span class="operator">=</span> redisTemplate.execute(limitScript, keys, limitCount, limitPeriod);</span><br><span class="line">        <span class="keyword">assert</span> count != <span class="literal">null</span>;</span><br><span class="line">        log.info(<span class="string">&quot;限制请求&#123;&#125;, 当前请求&#123;&#125;,缓存key&#123;&#125;&quot;</span>, limitCount, count.intValue(), key);</span><br><span class="line">        <span class="comment">// 如果缓存里没有值，或者他的值小于限制频率</span></span><br><span class="line">        <span class="keyword">if</span> (count.intValue() &gt;= limitCount) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.LIMIT_ERROR);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果从redis中执行都值判定为空，则这里跳过</span></span><br><span class="line">    <span class="keyword">catch</span> (NullPointerException ignored) &#123;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ServiceException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;限流异常&quot;</span>, e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.ERROR);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如上操作，我们通过下方的代码实现了流量限速，并且保证了原子性</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Number</span> <span class="variable">count</span> <span class="operator">=</span> redisTemplate.execute(limitScript, keys, limitCount, limitPeriod);</span><br></pre></td></tr></table></figure>
-
-<p>下面使我们的调用代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@LimitPoint(key = &quot;hello&quot;, period = 60, limit = 2,limitType = LimitTypeEnums.IP)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    cache.put(<span class="string">&quot;test&quot;</span>,<span class="string">&quot;test&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后使我们的效果截图：</p>
-<p><img src="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/image-20221010173503515.png" alt="image-20221010173503515"></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">lua</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/10/10/Redis%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next</a>
@@ -1274,6 +1326,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">vim</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据质量</a>
               </li>
              
               <li class="article-tag-list-item">

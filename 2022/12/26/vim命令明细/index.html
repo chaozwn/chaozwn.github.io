@@ -16,7 +16,7 @@
 <meta property="og:description" content="1brew install --cask keycastr  .ideavimrc12345let context_aware&#x3D;0let keep_input_source_in_normal&#x3D;&quot;com.apple.keylayout.ABC&quot;let keep_input_source_in_insert&#x3D;&quot;com.sogou.inputmethod.sogou.pi">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-26T04:50:54.000Z">
-<meta property="article:modified_time" content="2023-01-31T02:00:03.319Z">
+<meta property="article:modified_time" content="2023-02-11T11:17:33.026Z">
 <meta property="article:author" content="Jayce Zhao">
 <meta property="article:tag" content="vim">
 <meta name="twitter:card" content="summary">
@@ -187,8 +187,10 @@
 <p><code>e</code>移动到单词的结尾(从左往右移动)<br><code>w</code>移动到单词的开头(从左往右移动)<br><code>b</code>移动到单词的开头(从右往左移动)<br><code>ge</code>移动到上个单词的结尾(从右往左移动)</p>
 <p><code>E</code>移动到字串的结尾(从左往右移动)<br><code>W</code>移动到字串的开头(从左往右移动)<br><code>B</code>移动到字串的开头(从右往左移动)<br><code>gE</code>移动到字串的结尾(从右往左移动)</p>
 <p><code>%</code>移动到与制匹配到括号上去,比如(),[],{}</p>
+<p><code>&#125;</code>跳转到下一个段落</p>
 <p>常用组合按键: <code>v</code>,<code>c</code>,<code>d</code>可以与方向移动键做出组合,下面是常用示例<br><code>cw</code>删除当前单词并进入<code>insert</code>模式,会保留下个单词前的空格<br><code>dw</code>删除当前单词，不会保留下个单词前的空格<br><code>ea</code>在当前单词的结尾处添加<br><code>d^</code>删除到行首，光标所在单词不会删除</p>
-<h4 id="其他常用指令"><a href="#其他常用指令" class="headerlink" title="其他常用指令"></a>其他常用指令</h4><p><code>~</code>字母转换大小写<br><code>J</code>删除换行符,可以使下一行合并上来,<code>nJ</code>连接后面的 n 行<br><code>.</code>重复上一次修改的操作</p>
+<h4 id="其他常用指令"><a href="#其他常用指令" class="headerlink" title="其他常用指令"></a>其他常用指令</h4><p><code>~</code>字母转换大小写<br><code>J</code>删除换行符,可以使下一行合并上来,<code>nJ</code>连接后面的 n 行<br><code>.</code>记住上一次修改的动作，并重复</p>
+<p><code>&gt;</code>添加缩进. <code>&gt;&gt;</code>缩进一个tab，<code>&gt;G</code>到末尾的所有行缩进</p>
 <h4 id="搜索指令"><a href="#搜索指令" class="headerlink" title="搜索指令"></a>搜索指令</h4><p><code>/</code>向后查找(模糊搜索)<br><code>?</code>向前查找(模糊搜索)<br><code>v/c/d</code>可以结合<code>/</code>,<code>?</code>进行选中和删除范围</p>
 <p><code>*</code>移动到下一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续<br><code>#</code>移动到上一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续</p>
 <p><code>f&#123;motion&#125;</code>移动到 motion 到单词上,从左往右。<code>F&#123;motion&#125;</code>移动到 motion 到单词上,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>t&#123;motion&#125;</code>移动到 motion 到单词之前,从左往右。<code>T&#123;motion&#125;</code>移动到 motion 到单词之后,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>v/c/d</code>可以结合<code>f</code>选中&#x2F;删除到范围都是从当前位置到搜索到的位置</p>
@@ -243,6 +245,56 @@
 <p><code>ctrl</code> + <code>v</code> 选中所有, <code>:normal @a</code>所有行执行宏</p>
 <h3 id="快速替换一个单词"><a href="#快速替换一个单词" class="headerlink" title="快速替换一个单词"></a>快速替换一个单词</h3><p><code>yiw</code>复制指定单词</p>
 <p><code>viwp</code>粘贴指定单词</p>
+<h2 id="小技巧Tips"><a href="#小技巧Tips" class="headerlink" title="小技巧Tips"></a>小技巧Tips</h2><ol>
+<li><p>熟练应用<code>.</code>，他会记住上一次的动作</p>
+</li>
+<li><p><code>a</code> + <code>$</code> +<code>esc</code>使用一次之后，可用<code>.</code>代替，不要自我重复</p>
+</li>
+<li><p>减少无关的移动，多使用复合命令</p>
+<table>
+<thead>
+<tr>
+<th>复合命令</th>
+<th>等效长命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C</td>
+<td>c$</td>
+</tr>
+<tr>
+<td>s</td>
+<td>Cl</td>
+</tr>
+<tr>
+<td>S</td>
+<td>^C</td>
+</tr>
+<tr>
+<td>I</td>
+<td>^i</td>
+</tr>
+<tr>
+<td>A</td>
+<td>$a</td>
+</tr>
+<tr>
+<td>o</td>
+<td>A</td>
+</tr>
+<tr>
+<td>O</td>
+<td>ko</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><code>f</code>和<code>t</code>可以通过<code>;</code>和<code>,</code>进行重复和回退</p>
+</li>
+<li><p><code>gv</code> 回到上一次选中到选择区域</p>
+</li>
+<li><p>可视化模式下<code>U</code>可以把选中内容大写</p>
+</li>
+</ol>
 
       
 
@@ -325,6 +377,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2023/02/02/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8great-expectations%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          如何使用great_expectations做数据校验
+        
+      </div>
+    </a>
   
   
     <a href="/2022/11/21/flutter%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6/" id="article-nav-older" class="article-nav-link-wrap">
@@ -508,6 +569,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">vim</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据质量</a>
               </li>
              
               <li class="article-tag-list-item">
