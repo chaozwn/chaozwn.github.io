@@ -280,7 +280,8 @@
 <p>注意：如果是一行换行,<code>j</code>,<code>k</code>可能无法移动，使用<code>gj</code>,<code>gk</code></p>
 <p><code>H</code>,<code>M</code>,<code>L</code>指针跳转到屏幕上方(Head),中间(Middle)和底部(Lower)<br><code>zt</code>将当前行置于屏幕的最上方<br><code>zz</code>将当前行置于屏幕的中间<br><code>zb</code>将当前行置于屏幕的最下方</p>
 <p><code>ctrl</code> + <code>g</code>显示当前位置<br><code>ctrl</code> + <code>u</code>&#x2F;<code>d</code> 向上下滚动半屏<br><code>ctrl</code> + <code>y</code>&#x2F;<code>e</code> 向上下滚动一行<br><code>ctrl</code> + <code>b</code>&#x2F;<code>f</code> 向上下滚动一屏</p>
-<p><code>gg</code>返回文章到开头<br><code>number</code> + <code>G</code>&#x2F;<code>gg</code>可以到达指定到行数<br><code>ctrl</code> + <code>o</code>快速返回上一个指针位置</p>
+<p><code>gg</code>返回文章到开头<br><code>number</code> + <code>G</code>&#x2F;<code>gg</code>可以到达指定到行数</p>
+<h3 id="快速进行位置回退"><a href="#快速进行位置回退" class="headerlink" title="快速进行位置回退"></a>快速进行位置回退</h3><p><code>ctrl</code> + <code>o</code>快速返回上一个指针位置</p>
 <p><code>ctrl</code> + <code>i</code>快递前进到上一个指针位置</p>
 <h3 id="由-normal-模式-gt-insert-模式"><a href="#由-normal-模式-gt-insert-模式" class="headerlink" title="由 normal 模式 -&gt; insert 模式:"></a>由 normal 模式 -&gt; insert 模式:</h3><p><code>i</code>在指定单词<code>前面</code>插入,<code>I</code>在指定当行<code>最前面</code>插入<br><code>a</code>在指定单词<code>后面</code>插入,<code>A</code>在指定当行<code>最后面</code>插入<br><code>o</code>在指定行下方<code>插入</code>,<code>O</code>在指定行<code>上方</code>插入<br><code>s</code>删除光标所在字符,并进入插入模式。<code>S</code>删除光标所在行,并进入插入模式<br><code>cc</code>删除整行,并进入<code>插入模式</code>(此处等于<code>S</code>)。<code>C</code>删除光标往后的字符并把输入符号向前移动一个字符,<code>ck</code>,<code>cl</code>,<code>ch</code>,<code>cj</code>,<code>cb</code>,<code>ce</code>,<code>c$</code>等</p>
 <h3 id="由-insert-模式-gt-normal-模式"><a href="#由-insert-模式-gt-normal-模式" class="headerlink" title="由 insert 模式 -&gt; normal 模式"></a>由 insert 模式 -&gt; normal 模式</h3><p><code>ctrl</code>+<code>[</code>退出 insert mode</p>
@@ -305,6 +306,7 @@
 <h4 id="替换指令"><a href="#替换指令" class="headerlink" title="替换指令"></a>替换指令</h4><p><code>r</code>替换光标所在的字符,<code>R</code>逐个替换字符,可以依次修改整个语句</p>
 <h4 id="撤销指令"><a href="#撤销指令" class="headerlink" title="撤销指令"></a>撤销指令</h4><p><code>u</code>撤销,<code>U</code>撤销当前行的所有操作<br><code>ctrl</code> + <code>r</code> redo 重做,恢复</p>
 <h3 id="可视化模式"><a href="#可视化模式" class="headerlink" title="可视化模式"></a>可视化模式</h3><p><code>v</code> 基于字符的可视化选择<br><code>V</code> 基于行的可视化选择<br><code>o</code> 在 v 可视化状态下，可以切换可视区域光标的<code>起始</code>&#x2F;<code>终止</code>位置<br><code>O</code> 光标移动到选中文本的另一个角落<br><code>ctrl</code> + <code>v</code> 基于块的可视化选择,用于处理多行文本<br><code>gv</code> 回到上一次选中到选择区域<br><code>gb</code> 快速选中当前单词,再次按<code>gb</code>继续往下选择相同的单词,然后可以统一修改</p>
+<h3 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h3><p>在选中模式下，使用normal A.png就会默认在选中行添加A.png</p>
 <h4 id="在选中模式下-可以使用的参数"><a href="#在选中模式下-可以使用的参数" class="headerlink" title="在选中模式下,可以使用的参数"></a>在选中模式下,可以使用的参数</h4><p><code>c</code>删除选中内容，同时进入 insert 模式<br><code>A</code>和<code>I</code>多行编辑的时候可以使用<br><code>d</code>删除选中的文本<br><code>D</code>删除选中部分的文本,和<code>d</code>不同之处在于,既是选中文本中有些字符所在到行没有被选中,删除时也会一并删除<br><code>y</code>将选中部分复制到剪贴板<br><code>p</code>将剪贴板内容粘贴到光标之后,<code>P</code>将剪贴板内容粘贴到光标之前<br><code>u</code>将选中内容全部改成小写,<code>U</code>将选中内容全部改成大写<br><code>&gt;</code>将选中内容右移一个 tab 键规定的长度<br><code>&lt;</code>将选中内容左移一个 tab 键规定的长度</p>
 <h4 id="多指针模式"><a href="#多指针模式" class="headerlink" title="多指针模式"></a>多指针模式</h4><p><code>ctrl</code> + <code>q</code> 进入多选择模式，可以有多指针</p>
 <h3 id="选中整体向上或者向下移动几行"><a href="#选中整体向上或者向下移动几行" class="headerlink" title="选中整体向上或者向下移动几行"></a>选中整体向上或者向下移动几行</h3><p>假设光标在你想要移动的那一行上。</p>
