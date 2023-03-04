@@ -147,6 +147,104 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Spring-aop的执行顺序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">Spring aop的执行顺序</a>
+    </h1>
+  
+
+        
+        <a href="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/" class="archive-article-date">
+  	<time datetime="2022-10-10T10:35:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Spring-aop的执行顺序"><a href="#Spring-aop的执行顺序" class="headerlink" title="Spring aop的执行顺序"></a>Spring aop的执行顺序</h1><p>笔者在写spring aop通过注解的时候，遇到了一些注解代码不执行的情况，所以写下这篇文档，记录下aop大部分算子的执行周期。</p>
+<h5 id="1-首先我们实现一个注解，让他可以设置在方法上面"><a href="#1-首先我们实现一个注解，让他可以设置在方法上面" class="headerlink" title="1.首先我们实现一个注解，让他可以设置在方法上面"></a>1.首先我们实现一个注解，让他可以设置在方法上面</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这个注解只是为了引入aop，没有其他的意思</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.METHOD&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Aop &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-实现一个Aop拦截器"><a href="#2-实现一个Aop拦截器" class="headerlink" title="2.实现一个Aop拦截器"></a>2.实现一个Aop拦截器</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AopInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around(&quot;@annotation(aopAnnotation)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">around</span><span class="params">(ProceedingJoinPoint joinPoint, Aop aopAnnotation)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;around&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            joinPoint.proceed();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterThrowing(&quot;@annotation(aopAnnotation)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterThrowing</span><span class="params">(Aop aopAnnotation)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;afterThrowing&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterReturning(&quot;@annotation(aopAnnotation)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">AfterReturning</span><span class="params">(Aop aopAnnotation)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;AfterReturning&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before(&quot;@annotation(aopAnnotation)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">(Aop aopAnnotation)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;before&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@After(&quot;@annotation(aopAnnotation)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">after</span><span class="params">(Aop aopAnnotation)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;after&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-我们在添加调用方法"><a href="#3-我们在添加调用方法" class="headerlink" title="3.我们在添加调用方法"></a>3.我们在添加调用方法</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aop</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/retry&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">retry</span><span class="params">()</span> &#123;</span><br><span class="line">  log.info(<span class="string">&quot;aop执行&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;hello world&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查看打印结果：</p>
+<p><img src="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/image-20221010185344462.png" alt="image-20221010185344462"></p>
+<p>由这个图我们可以看出来：</p>
+<p>在方法不报错的情况下，执行顺序是 <strong>around &#x3D;&gt; before &#x3D;&gt; method执行 &#x3D;&gt; afterReturning  &#x3D;&gt; after,</strong></p>
+<p>而在方法报错的情况下呢,</p>
+<p><img src="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/image-20221010185632369.png" alt="image-20221010185632369"></p>
+<p>从上图我们可以看出执行顺序: <strong>around &#x3D;&gt; before &#x3D;&gt; method执行 &#x3D;&gt; afterThrowing  &#x3D;&gt; after,</strong></p>
+<p>仔细观察两者，会发现区别只有在报错的时候执行的是<strong>afterThrowing</strong>，而成功的时候执行的是<strong>afterReturning</strong>。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>Spring Aop Aspect的几个执行方法的顺序是：</p>
+<p>Around &#x3D;&gt; Before &#x3D;&gt; Method &#x3D;&gt; AfterReturning | AfterThrowing &#x3D;&gt; After</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">aop</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/10/10/Spring-aop%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Redis使用Lua脚本保证原子性" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1261,98 +1359,6 @@
 
 
   
-    <article id="post-flutter-web端解决跨域问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/">flutter web端解决跨域问题</a>
-    </h1>
-  
-
-        
-        <a href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2022-09-22T12:42:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Flutter-Web端解决跨域问题"><a href="#Flutter-Web端解决跨域问题" class="headerlink" title="Flutter Web端解决跨域问题"></a>Flutter Web端解决跨域问题</h1><p>1.当我们开发的flutter程序在ios和安卓上都运行正常时，开启web端测试。结果:</p>
-<p><img src="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/image-20220922204508015.png" alt="image-20220922204508015"></p>
-<p>从图上我们观察到了跨域错误。</p>
-<h5 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h5><p>1.引入代理包</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">dependencies:</span></span><br><span class="line">  <span class="attr">flutter:</span></span><br><span class="line">    <span class="attr">sdk:</span> <span class="string">flutter</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment"># The following adds the Cupertino Icons font to your application.</span></span><br><span class="line">  <span class="comment"># Use with the CupertinoIcons class for iOS style icons.</span></span><br><span class="line">  <span class="attr">cupertino_icons:</span> <span class="string">^1.0.2</span></span><br><span class="line">  <span class="attr">flutter_swiper_null_safety:</span> <span class="string">^1.0.2</span></span><br><span class="line">  <span class="attr">flutter_screenutil:</span> <span class="number">5.0</span><span class="number">.0</span><span class="string">+2</span></span><br><span class="line">  <span class="attr">dio:</span> <span class="string">^4.0.6</span></span><br><span class="line">  <span class="comment"># 引入代理类</span></span><br><span class="line">  <span class="attr">shelf_proxy:</span> <span class="string">^1.0.1</span></span><br></pre></td></tr></table></figure>
-
-<p>2.在lib目录下创建server package，添加代码</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:shelf/shelf_io.dart&#x27;</span> <span class="keyword">as</span> shelf_io;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:shelf_proxy/shelf_proxy.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() <span class="keyword">async</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> server = <span class="keyword">await</span> shelf_io.serve(</span><br><span class="line">    proxyHandler(<span class="string">&quot;https://xxxxxxx&quot;</span>),</span><br><span class="line">    <span class="string">&#x27;192.168.1.8&#x27;</span>,</span><br><span class="line">    <span class="number">7777</span>,</span><br><span class="line">  );</span><br><span class="line">  <span class="comment">// 这里设置请求策略，允许所有</span></span><br><span class="line">  server.defaultResponseHeaders.add(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, <span class="string">&#x27;*&#x27;</span>);</span><br><span class="line">  server.defaultResponseHeaders.add(<span class="string">&#x27;Access-Control-Allow-Credentials&#x27;</span>, <span class="keyword">true</span>);</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">&#x27;Proxying at http://<span class="subst">$&#123;server.address.host&#125;</span>:<span class="subst">$&#123;server.port&#125;</span>&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>3.修改Request类的baseUrl</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:dio/dio.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">String</span> domain = <span class="string">&quot;http://192.168.1.8:7777/&quot;</span>;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">var</span> options = BaseOptions(</span><br><span class="line">    baseUrl: <span class="string">&#x27;<span class="subst">$&#123;domain&#125;</span>api&#x27;</span>,</span><br><span class="line">    <span class="comment">// connectTimeout: 5000,</span></span><br><span class="line">    receiveTimeout: <span class="number">5000</span>,</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> Dio cli() &#123;</span><br><span class="line">    <span class="keyword">return</span> Dio(options);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨端</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">flutter</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/09/22/flutter-web%E7%AB%AF%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next</a>
@@ -1483,6 +1489,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">电商</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">jupyter</a>
               </li>
              
@@ -1492,10 +1502,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">conda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">电商</a>
               </li>
              
               <li class="article-tag-list-item">
