@@ -16,7 +16,7 @@
 <meta property="og:description" content="1brew install --cask keycastr  .ideavimrc12345let context_aware&#x3D;0let keep_input_source_in_normal&#x3D;&quot;com.apple.keylayout.ABC&quot;let keep_input_source_in_insert&#x3D;&quot;com.sogou.inputmethod.sogou.pi">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-12-26T04:50:54.000Z">
-<meta property="article:modified_time" content="2023-02-12T01:18:53.250Z">
+<meta property="article:modified_time" content="2023-03-13T16:15:04.783Z">
 <meta property="article:author" content="Jayce Zhao">
 <meta property="article:tag" content="vim">
 <meta name="twitter:card" content="summary">
@@ -172,6 +172,44 @@
 <h1 id="ideavimrc"><a href="#ideavimrc" class="headerlink" title=".ideavimrc"></a>.ideavimrc</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let context_aware=0</span><br><span class="line">let keep_input_source_in_normal=&quot;com.apple.keylayout.ABC&quot;</span><br><span class="line">let keep_input_source_in_insert=&quot;com.sogou.inputmethod.sogou.pinyin&quot;</span><br><span class="line">set keep-english-in-normal-and-restore-in-insert</span><br><span class="line">set multicursor</span><br></pre></td></tr></table></figure>
 
 <p>注意: <code>blank</code>字符有<code>空格</code>、<code>换行</code>、<code>tab</code>、<code>回车</code>等等</p>
+<h3 id="加强记忆的组合按键-实际开发的时候很有用"><a href="#加强记忆的组合按键-实际开发的时候很有用" class="headerlink" title="加强记忆的组合按键(实际开发的时候很有用)"></a>加强记忆的组合按键(实际开发的时候很有用)</h3><p><code>D</code> &#x3D;&#x3D;&#x3D; <code>d$</code></p>
+<p><code>C</code> &#x3D;&#x3D;&#x3D; <code>d$i</code></p>
+<p><code>S</code> &#x3D;&#x3D;&#x3D; <code>ddi</code></p>
+<p><code>&#123;</code>和<code>&#125;</code>回到上一个或者下一个空行</p>
+<p><code>%</code> 切换对应的括号结束和开始</p>
+<p><code>#</code>和<code>*</code>快速切换指针所在的同名单词</p>
+<p><code>d3k</code>和<code>d3j</code>向上和向下删除3行</p>
+<h3 id="标记功能"><a href="#标记功能" class="headerlink" title="标记功能"></a>标记功能</h3><p>当我们使用<code>G</code>按钮的时候，vim会记录下原来的跳转位置, <code>ctrl</code>+ <code>i</code>: 前进, <code>ctrl</code> + <code>o</code>: 后退</p>
+<ul>
+<li><p><code>m&#123;a-z&#125;</code>: 标记光标所在的位置，局部标记，只用于当前文件</p>
+</li>
+<li><p><code>m&#123;A-Z&#125;</code>: 标记光标所在位置，全局标记，标记之后，退出vim，重新启动，标记仍然有效</p>
+</li>
+<li><p>`{a-z} : 移动到标记位置</p>
+</li>
+<li><p><code>&#39;&#123;a-z&#125;</code>: 移动到标记为止的行首</p>
+</li>
+<li><p>``: 来回切换这次和上次光标所在的位置</p>
+</li>
+<li><p><code>&#39;&#39;</code>: 来回切换这次和上次光标所在的位置,不过光标在行首</p>
+</li>
+<li><p>`. : 移动到上次更改的地方</p>
+</li>
+<li><p>`{0,9}: 回到上[2-10]次关闭vim时最后离开的位置</p>
+</li>
+<li><p>`“: 移动到上次离开的地方。</p>
+</li>
+<li><p><code>:marks</code>: 查看所有标记.</p>
+</li>
+<li><p><code>:delmarks a b</code> – 删除标记a和b。</p>
+</li>
+<li><p><code>:delmarks a-c</code> – 删除标记a、b和c。</p>
+</li>
+<li><p><code>:delmarks a c-f</code> – 删除标记a、c、d、e、f。</p>
+</li>
+<li><p><code>:delmarks!</code> – 删除当前缓冲区的所有标记。</p>
+</li>
+</ul>
 <h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><p><code>:wq</code> 退出<br><code>:e!</code> 不保存,强制重新加载<br><code>:q!</code> 强制退出</p>
 <h3 id="屏幕移动相关操作"><a href="#屏幕移动相关操作" class="headerlink" title="屏幕移动相关操作"></a>屏幕移动相关操作</h3><p><code>h</code>,<code>j</code>,<code>k</code>,<code>l</code>分别用来上下左右移动</p>
 <p>注意：如果是一行换行,<code>j</code>,<code>k</code>可能无法移动，使用<code>gj</code>,<code>gk</code></p>
@@ -180,7 +218,7 @@
 <p><code>gg</code>返回文章到开头<br><code>number</code> + <code>G</code>&#x2F;<code>gg</code>可以到达指定到行数</p>
 <h3 id="快速进行位置回退"><a href="#快速进行位置回退" class="headerlink" title="快速进行位置回退"></a>快速进行位置回退</h3><p><code>ctrl</code> + <code>o</code>快速返回上一个指针位置</p>
 <p><code>ctrl</code> + <code>i</code>快递前进到上一个指针位置</p>
-<h3 id="由-normal-模式-gt-insert-模式"><a href="#由-normal-模式-gt-insert-模式" class="headerlink" title="由 normal 模式 -&gt; insert 模式:"></a>由 normal 模式 -&gt; insert 模式:</h3><p><code>i</code>在指定单词<code>前面</code>插入,<code>I</code>在指定当行<code>最前面</code>插入<br><code>a</code>在指定单词<code>后面</code>插入,<code>A</code>在指定当行<code>最后面</code>插入<br><code>o</code>在指定行下方<code>插入</code>,<code>O</code>在指定行<code>上方</code>插入<br><code>s</code>删除光标所在字符,并进入插入模式。<code>S</code>删除光标所在行,并进入插入模式<br><code>cc</code>删除整行,并进入<code>插入模式</code>(此处等于<code>S</code>)。<code>C</code>删除光标往后的字符并把输入符号向前移动一个字符,<code>ck</code>,<code>cl</code>,<code>ch</code>,<code>cj</code>,<code>cb</code>,<code>ce</code>,<code>c$</code>等</p>
+<h3 id="由-normal-模式-gt-insert-模式"><a href="#由-normal-模式-gt-insert-模式" class="headerlink" title="由 normal 模式 -&gt; insert 模式:"></a>由 normal 模式 -&gt; insert 模式:</h3><p><code>i</code>在指定单词<code>前面</code>插入,<code>I</code>在指定当行<code>最前面</code>插入<br><code>a</code>在指定单词<code>后面</code>插入,<code>A</code>在指定当行<code>最后面</code>插入<br><code>o</code>在指定行下方<code>插入</code>,<code>O</code>在指定行<code>上方</code>插入<br><code>s</code>删除光标所在字符,并进入插入模式。<code>S</code>删除光标所在行,并进入插入模式<br><code>cc</code>删除整行,并进入<code>插入模式</code>(此处等于<code>S</code>)。<code>C</code>删除光标往后的字符并把输入符号向前移动一个字符,<code>ck</code>,<code>cl</code>,<code>ch</code>,<code>cj</code>,<code>cb</code><br>,<code>ce</code>,<code>c$</code>等</p>
 <h3 id="由-insert-模式-gt-normal-模式"><a href="#由-insert-模式-gt-normal-模式" class="headerlink" title="由 insert 模式 -&gt; normal 模式"></a>由 insert 模式 -&gt; normal 模式</h3><p><code>ctrl</code>+<code>[</code>退出 insert mode</p>
 <h3 id="normal-模式"><a href="#normal-模式" class="headerlink" title="normal 模式"></a>normal 模式</h3><h4 id="移动光标"><a href="#移动光标" class="headerlink" title="移动光标"></a>移动光标</h4><p><code>单词</code>: 字母组成到单词、括号等<br><code>字串</code>: 空格、<code>tab</code>、换行分割的字符</p>
 <p><code>^</code>将光标移动到行首第一个非<code>blank</code>字符到位置<br><code>g_</code>将光标移动到行末第一个非<code>blank</code>字符的位置<br><code>0</code>将光标移动到行首,包括<code>blank</code>字符<br><code>$</code>将光标移动到行末,包括<code>blank</code>字符</p>
@@ -194,7 +232,7 @@
 <p><code>&gt;</code>添加缩进. <code>&gt;&gt;</code>缩进一个tab，<code>&gt;G</code>到末尾的所有行缩进</p>
 <h4 id="搜索指令"><a href="#搜索指令" class="headerlink" title="搜索指令"></a>搜索指令</h4><p><code>/</code>向后查找(模糊搜索)<br><code>?</code>向前查找(模糊搜索)<br><code>v/c/d</code>可以结合<code>/</code>,<code>?</code>进行选中和删除范围</p>
 <p><code>*</code>移动到下一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续<br><code>#</code>移动到上一个光标所在单词,可以使用<code>n</code>或者<code>N</code>记住上一步到操作，然后继续</p>
-<p><code>f&#123;motion&#125;</code>移动到 motion 到单词上,从左往右。<code>F&#123;motion&#125;</code>移动到 motion 到单词上,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>t&#123;motion&#125;</code>移动到 motion 到单词之前,从左往右。<code>T&#123;motion&#125;</code>移动到 motion 到单词之后,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>v/c/d</code>可以结合<code>f</code>选中&#x2F;删除到范围都是从当前位置到搜索到的位置</p>
+<p><code>f&#123;motion&#125;</code>移动到 motion 到单词上,从左往右。<code>F&#123;motion&#125;</code>移动到 motion 到单词上,从右往左。同时可以搭配<code>;</code>和<code>,</code>可以快速重复上一个动作<br><code>t&#123;motion&#125;</code>移动到 motion 到单词之前,从左往右。<code>T&#123;motion&#125;</code>移动到 motion 到单词之后,从右往左。同时可以搭配<code>;</code>和<code>,</code><br>可以快速重复上一个动作<br><code>v/c/d</code>可以结合<code>f</code>选中&#x2F;删除到范围都是从当前位置到搜索到的位置</p>
 <h4 id="复制指令"><a href="#复制指令" class="headerlink" title="复制指令"></a>复制指令</h4><p><code>yy</code>复制当前行,同时还可以推理出<code>yw</code>复制到下一个单词为止,<code>yk</code>,<code>yl</code>,<code>yh</code>,<code>yj</code>,<code>yb</code>,<code>ye</code>,<code>y$</code>等</p>
 <h4 id="删除指令"><a href="#删除指令" class="headerlink" title="删除指令"></a>删除指令</h4><p><code>dd</code>删除当前行,同时还可以推理出<code>dw</code>删除到下一个单词为止,<code>dk</code>,<code>dl</code>,<code>dh</code>,<code>dj</code>,<code>db</code>,<code>de</code>,<code>d$</code>等</p>
 <p><code>D</code>删除光标之后的单词</p>
@@ -217,7 +255,7 @@
 <p>移动多行：</p>
 <p><code>V</code> （即Shift – V ）并上下移动select器以在VIM中select多行</p>
 <p>一旦选中hit<code>:</code>并运行上面的命令， <code>m +1</code>等</p>
-<h3 id="文本对象操作"><a href="#文本对象操作" class="headerlink" title="文本对象操作"></a>文本对象操作</h3><p>[number] <command> [text object] number 表示次数，command 表示命令,<code>d</code>,<code>c</code>,<code>y</code>,text object 是要操作的文本对象，比如单词 w,句子 s,段落 p</p>
+<h3 id="文本对象操作"><a href="#文本对象操作" class="headerlink" title="文本对象操作"></a>文本对象操作</h3><p>[number] <command> [text object] number 表示次数，command 表示命令,<code>d</code>,<code>c</code>,<code>y</code>,text object 是要操作的文本对象，比如单词<br>w,句子 s,段落 p</p>
 <h4 id="内-x2F-外部"><a href="#内-x2F-外部" class="headerlink" title="内&#x2F;外部:"></a>内&#x2F;外部:</h4><p><code>i</code>: 内部<br><code>a</code>: 外部</p>
 <h4 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h4><p><code>w</code>: 一个单词, 内部: 单词本身, 外部: 单词本身 + 左右空格, 优先空格<br><code>W</code>: 一个字串, 内部: 字串本身, 外部: 单词本身 + 左右空格, 优先空格<br><code>(</code>,<code>)</code>,<code>b</code>: 一对[],内部: 括号内部, 外部: 括号以及括号内部<br><code>[</code>,<code>]</code>: 一对[],内部: 括号内部, 外部: 括号以及括号内部<br><code>&#123;</code>,<code>&#125;</code>,<code>B</code>: 一对{},内部: 括号内部, 外部: 括号以及括号内部<br><code>&lt;</code>,<code>&gt;</code>: 一对&lt;&gt;,内部: 括号内部, 外部: 括号以及括号内部<br><code>t</code>: html 文本<br><code>&#39;</code>: 一对单引号,内部: 括号内部, 外部: 括号以及括号内部<br><code>&quot;</code>: 一对双引号,内部: 括号内部, 外部: 括号以及括号内部</p>
 <p><code>反引号</code>: 一对反引号,内部: 括号内部, 外部: 括号以及括号内部<br><code>s</code>: 一个句子,以.!?结尾<br><code>p</code>: 一个段落,以空行分隔,内部选中该段落,外部还会选中下面的空行</p>
@@ -238,10 +276,10 @@
 <p><code>flags</code>: 取值有两个:</p>
 <ol>
 <li><code>g</code>表示全局替换，如果不加<code>g</code>,默认只替换每行第一个匹配到的字符。</li>
-<li><code>c</code>会弹出对话框，询问是否替换，输入<code>y</code>表示替换当前字符,<code>n</code>表示不替换当前字符,<code>a</code>表示替换所有,<code>q</code>表示退出,<code>l</code>表示替换当前字符并退出。可以多个<code>flag</code>一起使用，比如<code>gc</code></li>
+<li><code>c</code>会弹出对话框，询问是否替换，输入<code>y</code>表示替换当前字符,<code>n</code>表示不替换当前字符,<code>a</code>表示替换所有,<code>q</code>表示退出,<code>l</code><br>表示替换当前字符并退出。可以多个<code>flag</code>一起使用，比如<code>gc</code></li>
 <li><code>n</code>统计数量</li>
 </ol>
-<p>输入命令按回车后即执行替换命令，如果切换到 normal 模式，不执行替换命令，类似预览，可以先预览看看是不是我们要替换的结果，如果是就按回车，否则按 Esc<br>小知识：当使用可视化模式选择多行又退出可视化后（选择执行完其他命令后 Esc），’&lt; 会跳转到刚才可视化选择的起始位置，’&gt; 会跳转到刚才可视化选择的结束位置</p>
+<p>输入命令按回车后即执行替换命令，如果切换到 normal 模式，不执行替换命令，类似预览，可以先预览看看是不是我们要替换的结果，如果是就按回车，否则按<br>Esc<br>小知识：当使用可视化模式选择多行又退出可视化后（选择执行完其他命令后 Esc），’&lt; 会跳转到刚才可视化选择的起始位置，’&gt;<br>会跳转到刚才可视化选择的结束位置</p>
 <p>:s&#x2F;old&#x2F;new - 用 new 替换当前行第一个 old。<br>:s&#x2F;old&#x2F;new&#x2F;g - 用 new 替换当前行所有的 old。<br>:n1,n2s&#x2F;old&#x2F;new&#x2F;g - 用 new 替换文件 n1 行到 n2 行所有的 old。<br>:%s&#x2F;old&#x2F;new&#x2F;g - 用 new 替换文件中所有的 old。<br>:%s&#x2F;^&#x2F;xxx&#x2F;g - 在每一行的行首插入 xxx，^表示行首。<br>:%s&#x2F;$&#x2F;xxx&#x2F;g - 在每一行的行尾插入xxx，$表示行尾。<br>有替换命令末尾加上 c，每个替换都将需要用户确认。 如：%s&#x2F;old&#x2F;new&#x2F;gc，加上 i 则忽略大小写(ignore)。</p>
 <h3 id="宏操作"><a href="#宏操作" class="headerlink" title="宏操作"></a>宏操作</h3><p><code>q</code> 录制和结束录制宏<br><code>q[a-z]</code>选择要保存的寄存器,把录制的命令保存到其中<br><code>@[a-z]</code>回放寄存器到一系列命令</p>
 <p><code>ctrl</code> + <code>v</code> 选中所有, <code>:normal @a</code>所有行执行宏</p>
