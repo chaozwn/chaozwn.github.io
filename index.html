@@ -147,6 +147,174 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-如何使用hive3的acid表实现kimball建模的代理键" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/">如何使用hive3的acid表实现kimball建模的代理键</a>
+    </h1>
+  
+
+        
+        <a href="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/" class="archive-article-date">
+  	<time datetime="2023-04-05T13:55:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="如何使用hive3的acid表实现kimball建模的代理键"><a href="#如何使用hive3的acid表实现kimball建模的代理键" class="headerlink" title="如何使用hive3的acid表实现kimball建模的代理键"></a>如何使用hive3的acid表实现kimball建模的代理键</h2><h2 id="1-使用byzer导入2亿条数据"><a href="#1-使用byzer导入2亿条数据" class="headerlink" title="1.使用byzer导入2亿条数据"></a>1.使用byzer导入2亿条数据</h2><p><img src="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/image-20230405231418232.png" alt="image-20230405231418232"></p>
+<h2 id="2-byzer将数据写入到hive3"><a href="#2-byzer将数据写入到hive3" class="headerlink" title="2.byzer将数据写入到hive3"></a>2.byzer将数据写入到hive3</h2><p><img src="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/image-20230405231522686.png" alt="image-20230405231522686"></p>
+<h2 id="3-在hive中check数据"><a href="#3-在hive中check数据" class="headerlink" title="3.在hive中check数据"></a>3.在hive中check数据</h2><p><img src="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/image-20230405233758774.png" alt="image-20230405233758774"></p>
+<p><img src="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/image-20230405233819099.png" alt="image-20230405233819099"></p>
+<p>走到这里条数也对上了</p>
+<h2 id="4-我们创建一张customer-test表，使用scd的方式，然后对这张2亿条数据的表进行重刷，查看时间"><a href="#4-我们创建一张customer-test表，使用scd的方式，然后对这张2亿条数据的表进行重刷，查看时间" class="headerlink" title="4.我们创建一张customer_test表，使用scd的方式，然后对这张2亿条数据的表进行重刷，查看时间"></a>4.我们创建一张customer_test表，使用scd的方式，然后对这张2亿条数据的表进行重刷，查看时间</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hive.support.concurrency<span class="operator">=</span><span class="literal">true</span>;</span><br><span class="line"><span class="keyword">set</span> hive.txn.manager<span class="operator">=</span>org.apache.hadoop.hive.ql.lockmgr.DbTxnManager;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> if <span class="keyword">exists</span> test_event_acid;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `test_event_acid`(</span><br><span class="line">  `customer_id` string, </span><br><span class="line">  `event` string, </span><br><span class="line">  `tenant_id` <span class="type">int</span></span><br><span class="line">) STORED <span class="keyword">AS</span> ORC TBLPROPERTIES(</span><br><span class="line"><span class="string">&#x27;transactional&#x27;</span><span class="operator">=</span><span class="string">&#x27;true&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;transactional_properties&#x27;</span><span class="operator">=</span><span class="string">&#x27;default&#x27;</span>);</span><br><span class="line"> <span class="keyword">INSERT</span> <span class="keyword">INTO</span> test_event_acid (customer_id, event, tenant_id) <span class="keyword">SELECT</span> customer_id, event, tenant_id <span class="keyword">from</span> test_event;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> if <span class="keyword">exists</span> customer_test;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> customer_test</span><br><span class="line">(</span><br><span class="line"> `ID` <span class="type">bigint</span> <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line"> customer_id string,</span><br><span class="line"> name <span class="type">VARCHAR</span>(<span class="number">64</span>), </span><br><span class="line"> <span class="keyword">PRIMARY</span> KEY (ID) DISABLE NOVALIDATE</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> customer_test (id, customer_id, name) <span class="keyword">SELECT</span> id, customer_id ,<span class="string">&#x27;zhangsan&#x27;</span> <span class="keyword">from</span> test_event limit <span class="number">100000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> test_event_acid <span class="keyword">ADD</span> COLUMNS (c_id <span class="type">bigint</span>);</span><br><span class="line"> </span><br><span class="line"><span class="keyword">MERGE</span> <span class="keyword">INTO</span> test_event_acid g <span class="keyword">USING</span> customer_test s <span class="keyword">ON</span> g.customer_id <span class="operator">=</span> s.customer_id</span><br><span class="line"><span class="keyword">WHEN</span> MATCHED <span class="keyword">THEN</span> <span class="keyword">UPDATE</span> <span class="keyword">SET</span> c_id <span class="operator">=</span> s.id;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-合并时间98s"><a href="#5-合并时间98s" class="headerlink" title="5.合并时间98s"></a>5.合并时间98s</h2><p><img src="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/image-20230406003242489.png" alt="image-20230406003242489"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hive</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/04/05/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8hive3%E7%9A%84acid%E8%A1%A8%E5%AE%9E%E7%8E%B0kimball%E5%BB%BA%E6%A8%A1%E7%9A%84%E4%BB%A3%E7%90%86%E9%94%AE/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-现在css100天" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/04/05/%E7%8E%B0%E5%9C%A8css100%E5%A4%A9/">现在css100天速读</a>
+    </h1>
+  
+
+        
+        <a href="/2023/04/05/%E7%8E%B0%E5%9C%A8css100%E5%A4%A9/" class="archive-article-date">
+  	<time datetime="2023-04-05T02:24:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-04-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#阅读 css100 天</p>
+<h3 id="day1"><a href="#day1" class="headerlink" title="day1"></a>day1</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">  //当<span class="attr">--not-set</span>不存在的时候，使用第二个参数作为默认值</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="built_in">var</span>(--not-set, <span class="number">#000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="day2"><a href="#day2" class="headerlink" title="day2"></a>day2</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="selector-tag">h3</span>&gt;<span class="attribute">left</span> <span class="selector-tag">to</span> <span class="attribute">right</span>&lt;/<span class="selector-tag">h3</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;<span class="selector-tag">ul</span>&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="selector-tag">li</span>&gt;One&lt;/<span class="selector-tag">li</span>&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="selector-tag">li</span>&gt;Two&lt;/<span class="selector-tag">li</span>&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="selector-tag">li</span>&gt;Three&lt;/<span class="selector-tag">li</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;/<span class="selector-tag">ul</span>&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;<span class="selector-tag">h3</span>&gt;<span class="attribute">right</span> <span class="selector-tag">to</span> <span class="attribute">left</span>&lt;/<span class="selector-tag">h3</span>&gt;</span><br><span class="line"></span><br><span class="line">// 读取方向，从右边往左开始</span><br><span class="line">&lt;<span class="selector-tag">ul</span> dir=&quot;rtl&quot;&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="selector-tag">li</span>&gt;One&lt;/<span class="selector-tag">li</span>&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="selector-tag">li</span>&gt;Two&lt;/<span class="selector-tag">li</span>&gt;</span><br><span class="line"></span><br><span class="line">  &lt;<span class="selector-tag">li</span>&gt;Three&lt;/<span class="selector-tag">li</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;/<span class="selector-tag">ul</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="day3"><a href="#day3" class="headerlink" title="day3"></a>day3</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">button</span> &#123;</span><br><span class="line">  // 无论读取方向如何，这些属性都将始终按照从上到右，从下到左的方向应用</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">20px</span> <span class="number">40px</span> <span class="number">10px</span> <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.logical</span> &#123;</span><br><span class="line">  <span class="attribute">margin-inline</span>: <span class="number">5rem</span>; <span class="comment">/* start and end value (= left and right) */</span></span><br><span class="line">  <span class="attribute">margin-block</span>: <span class="number">5rem</span>; <span class="comment">/* start and end value (= top and bottom) */</span></span><br><span class="line">  <span class="attribute">margin-inline</span>: <span class="number">1rem</span> <span class="number">2rem</span>; <span class="comment">/* start / end value (= left / right in ltr) */</span></span><br><span class="line">  <span class="attribute">margin-block</span>: <span class="number">3rem</span> <span class="number">4rem</span>; <span class="comment">/* start / end value (= top / bottom in ltr) */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="day3-1"><a href="#day3-1" class="headerlink" title="day3"></a>day3</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="built_in">min</span>(<span class="number">400px</span>, <span class="number">200px</span>, <span class="number">300px</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="day4"><a href="#day4" class="headerlink" title="day4"></a>day4</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="built_in">max</span>(<span class="number">400px</span>, <span class="number">200px</span>, <span class="number">300px</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="day5"><a href="#day5" class="headerlink" title="day5"></a>day5</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-item&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;name&quot;</span>&gt;</span>Name<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">id</span>=<span class="string">&quot;name&quot;</span> <span class="attr">required</span> <span class="attr">aria-invalid</span>=<span class="string">&quot;true&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-item&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;email&quot;</span>&gt;</span>E-Mail<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">id</span>=<span class="string">&quot;email&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.form-item</span> &#123;</span><br><span class="line">  <span class="attr">--color</span>: <span class="number">#000</span>;</span><br><span class="line">  <span class="comment">/* The default color is #000 */</span></span><br><span class="line">  <span class="attribute">color</span>: <span class="built_in">var</span>(--color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">input</span> &#123;</span><br><span class="line">  <span class="comment">/* The default border-color is #000 */</span></span><br><span class="line">  <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="built_in">var</span>(--color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 如果对应元素包含那个属性值，就添加对应属性*/</span></span><br><span class="line"><span class="selector-class">.form-item</span><span class="selector-pseudo">:has</span>(<span class="selector-attr">[aria-invalid=<span class="string">&quot;true&quot;</span>]</span>) &#123;</span><br><span class="line">  <span class="attr">--color</span>: <span class="number">#f00</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">css</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/04/05/%E7%8E%B0%E5%9C%A8css100%E5%A4%A9/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-如何使用Surfingkeys" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -608,36 +776,21 @@
 <p><code>%</code> 切换对应的括号结束和开始</p>
 <p><code>#</code>和<code>*</code>快速切换指针所在的同名单词</p>
 <p><code>d3k</code>和<code>d3j</code>向上和向下删除3行</p>
-<h3 id="标记功能"><a href="#标记功能" class="headerlink" title="标记功能"></a>标记功能</h3><p>当我们使用<code>G</code>按钮的时候，vim会记录下原来的跳转位置, <code>ctrl</code>+ <code>i</code>: 前进, <code>ctrl</code> + <code>o</code>: 后退</p>
+<h3 id="标记功能"><a href="#标记功能" class="headerlink" title="标记功能"></a>标记功能</h3><p>当我们使用<code>G</code>按钮的时候(这里包括了<code>&#123;number&#125;g</code>)，vim会记录下原来的跳转位置, <code>ctrl</code>+ <code>i</code>: 前进, <code>ctrl</code> + <code>o</code>: 后退</p>
 <ul>
-<li><p><code>m&#123;a-z&#125;</code>: 标记光标所在的位置，局部标记，只用于当前文件</p>
-</li>
-<li><p><code>m&#123;A-Z&#125;</code>: 标记光标所在位置，全局标记，标记之后，退出vim，重新启动，标记仍然有效</p>
-</li>
-<li><p>`{a-z} : 移动到标记位置</p>
-</li>
-<li><p><code>&#39;&#123;a-z&#125;</code>: 移动到标记为止的行首</p>
-</li>
-<li><p>``: 来回切换这次和上次光标所在的位置</p>
-</li>
-<li><p><code>&#39;&#39;</code>: 来回切换这次和上次光标所在的位置,不过光标在行首</p>
-</li>
-<li><p>`. : 移动到上次更改的地方</p>
-</li>
-<li><p>`{0,9}: 回到上[2-10]次关闭vim时最后离开的位置</p>
-</li>
-<li><p>`“: 移动到上次离开的地方。</p>
-</li>
-<li><p><code>:marks</code>: 查看所有标记.</p>
-</li>
-<li><p><code>:delmarks a b</code> – 删除标记a和b。</p>
-</li>
-<li><p><code>:delmarks a-c</code> – 删除标记a、b和c。</p>
-</li>
-<li><p><code>:delmarks a c-f</code> – 删除标记a、c、d、e、f。</p>
-</li>
-<li><p><code>:delmarks!</code> – 删除当前缓冲区的所有标记。</p>
-</li>
+<li><code>m&#123;a-z&#125;</code>: 标记光标所在的位置，局部标记，只用于当前文件</li>
+<li><code>m&#123;A-Z&#125;</code>: 标记光标所在位置，全局标记，标记之后，退出vim，重新启动，标记仍然有效</li>
+<li>`{a-z} : 移动到标记位置</li>
+<li><code>&#39;&#123;a-z&#125;</code>: 移动到标记为止的行首</li>
+<li>``: 来回切换这次和上次光标所在的位置</li>
+<li><code>&#39;&#39;</code>: 来回切换这次和上次光标所在的位置,不过光标在行首</li>
+<li>`. : 移动到上次更改的光标位置</li>
+<li><code>&#39;.</code>: 移动到上次更改的光标位置的行首。</li>
+<li><code>:marks</code>: 查看所有标记.</li>
+<li><code>:delmarks a b</code> – 删除标记a和b。</li>
+<li><code>:delmarks a-c</code> – 删除标记a、b和c。</li>
+<li><code>:delmarks a c-f</code> – 删除标记a、c、d、e、f。</li>
+<li><code>:delmarks!</code> – 删除当前缓冲区的所有标记。</li>
 </ul>
 <h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><p><code>:wq</code> 退出<br><code>:e!</code> 不保存,强制重新加载<br><code>:q!</code> 强制退出</p>
 <h3 id="屏幕移动相关操作"><a href="#屏幕移动相关操作" class="headerlink" title="屏幕移动相关操作"></a>屏幕移动相关操作</h3><p><code>h</code>,<code>j</code>,<code>k</code>,<code>l</code>分别用来上下左右移动</p>
@@ -645,17 +798,14 @@
 <p><code>H</code>,<code>M</code>,<code>L</code>指针跳转到屏幕上方(Head),中间(Middle)和底部(Lower)<br><code>zt</code>将当前行置于屏幕的最上方<br><code>zz</code>将当前行置于屏幕的中间<br><code>zb</code>将当前行置于屏幕的最下方</p>
 <p><code>ctrl</code> + <code>g</code>显示当前位置<br><code>ctrl</code> + <code>u</code>&#x2F;<code>d</code> 向上下滚动半屏<br><code>ctrl</code> + <code>y</code>&#x2F;<code>e</code> 向上下滚动一行<br><code>ctrl</code> + <code>b</code>&#x2F;<code>f</code> 向上下滚动一屏</p>
 <p><code>gg</code>返回文章到开头<br><code>number</code> + <code>G</code>&#x2F;<code>gg</code>可以到达指定到行数</p>
-<h3 id="快速进行位置回退"><a href="#快速进行位置回退" class="headerlink" title="快速进行位置回退"></a>快速进行位置回退</h3><p><code>ctrl</code> + <code>o</code>快速返回上一个指针位置</p>
-<p><code>ctrl</code> + <code>i</code>快递前进到上一个指针位置</p>
-<h3 id="由-normal-模式-gt-insert-模式"><a href="#由-normal-模式-gt-insert-模式" class="headerlink" title="由 normal 模式 -&gt; insert 模式:"></a>由 normal 模式 -&gt; insert 模式:</h3><p><code>i</code>在指定单词<code>前面</code>插入,<code>I</code>在指定当行<code>最前面</code>插入<br><code>a</code>在指定单词<code>后面</code>插入,<code>A</code>在指定当行<code>最后面</code>插入<br><code>o</code>在指定行下方<code>插入</code>,<code>O</code>在指定行<code>上方</code>插入<br><code>s</code>删除光标所在字符,并进入插入模式。<code>S</code>删除光标所在行,并进入插入模式<br><code>cc</code>删除整行,并进入<code>插入模式</code>(此处等于<code>S</code>)。<code>C</code>删除光标往后的字符并把输入符号向前移动一个字符,<code>ck</code>,<code>cl</code>,<code>ch</code>,<code>cj</code>,<code>cb</code><br>,<code>ce</code>,<code>c$</code>等</p>
+<h3 id="由-normal-模式-gt-insert-模式"><a href="#由-normal-模式-gt-insert-模式" class="headerlink" title="由 normal 模式 -&gt; insert 模式:"></a>由 normal 模式 -&gt; insert 模式:</h3><p><code>i</code>在指定单词<code>前面</code>插入,<code>I</code>在指定当行<code>最前面</code>插入<br><code>a</code>在指定单词<code>后面</code>插入,<code>A</code>在指定当行<code>最后面</code>插入<br><code>o</code>在指定行下方<code>插入</code>,<code>O</code>在指定行<code>上方</code>插入<br><code>s</code>删除光标所在字符,并进入插入模式<br><code>cc</code>删除整行,并进入<code>插入模式</code>(此处等于<code>S</code>)。</p>
+<p><code>C</code>删除光标往后的字符并把输入符号向前移动一个字符,<code>ck</code>,<code>cl</code>,<code>ch</code>,<code>cj</code>,<code>cb</code>,<code>ce</code>,<code>c$</code>等</p>
 <h3 id="由-insert-模式-gt-normal-模式"><a href="#由-insert-模式-gt-normal-模式" class="headerlink" title="由 insert 模式 -&gt; normal 模式"></a>由 insert 模式 -&gt; normal 模式</h3><p><code>ctrl</code>+<code>[</code>退出 insert mode</p>
 <h3 id="normal-模式"><a href="#normal-模式" class="headerlink" title="normal 模式"></a>normal 模式</h3><h4 id="移动光标"><a href="#移动光标" class="headerlink" title="移动光标"></a>移动光标</h4><p><code>单词</code>: 字母组成到单词、括号等<br><code>字串</code>: 空格、<code>tab</code>、换行分割的字符</p>
 <p><code>^</code>将光标移动到行首第一个非<code>blank</code>字符到位置<br><code>g_</code>将光标移动到行末第一个非<code>blank</code>字符的位置<br><code>0</code>将光标移动到行首,包括<code>blank</code>字符<br><code>$</code>将光标移动到行末,包括<code>blank</code>字符</p>
 <p><code>+</code> 移动下一行的第一个字符<br><code>-</code> 移动到上一行的第一个字符</p>
 <p><code>e</code>移动到单词的结尾(从左往右移动)<br><code>w</code>移动到单词的开头(从左往右移动)<br><code>b</code>移动到单词的开头(从右往左移动)<br><code>ge</code>移动到上个单词的结尾(从右往左移动)</p>
 <p><code>E</code>移动到字串的结尾(从左往右移动)<br><code>W</code>移动到字串的开头(从左往右移动)<br><code>B</code>移动到字串的开头(从右往左移动)<br><code>gE</code>移动到字串的结尾(从右往左移动)</p>
-<p><code>%</code>移动到与制匹配到括号上去,比如(),[],{}</p>
-<p><code>&#125;</code>跳转到下一个段落</p>
 <p>常用组合按键: <code>v</code>,<code>c</code>,<code>d</code>可以与方向移动键做出组合,下面是常用示例<br><code>cw</code>删除当前单词并进入<code>insert</code>模式,会保留下个单词前的空格<br><code>dw</code>删除当前单词，不会保留下个单词前的空格<br><code>ea</code>在当前单词的结尾处添加<br><code>d^</code>删除到行首，光标所在单词不会删除</p>
 <h4 id="其他常用指令"><a href="#其他常用指令" class="headerlink" title="其他常用指令"></a>其他常用指令</h4><p><code>~</code>字母转换大小写<br><code>J</code>删除换行符,可以使下一行合并上来,<code>nJ</code>连接后面的 n 行<br><code>.</code>记住上一次修改的动作，并重复</p>
 <p><code>&gt;</code>添加缩进. <code>&gt;&gt;</code>缩进一个tab，<code>&gt;G</code>到末尾的所有行缩进</p>
@@ -683,7 +833,7 @@
 <p><code>:m 3</code> – 在第三行之后移动行（将3replace为您想要的行）</p>
 <p>移动多行：</p>
 <p><code>V</code> （即Shift – V ）并上下移动select器以在VIM中select多行</p>
-<p>一旦选中hit<code>:</code>并运行上面的命令， <code>m +1</code>等</p>
+<p>一旦选中<code>:</code>并运行上面的命令， <code>m +1</code>等</p>
 <h3 id="文本对象操作"><a href="#文本对象操作" class="headerlink" title="文本对象操作"></a>文本对象操作</h3><p>[number] <command> [text object] number 表示次数，command 表示命令,<code>d</code>,<code>c</code>,<code>y</code>,text object 是要操作的文本对象，比如单词<br>w,句子 s,段落 p</p>
 <h4 id="内-x2F-外部"><a href="#内-x2F-外部" class="headerlink" title="内&#x2F;外部:"></a>内&#x2F;外部:</h4><p><code>i</code>: 内部<br><code>a</code>: 外部</p>
 <h4 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h4><p><code>w</code>: 一个单词, 内部: 单词本身, 外部: 单词本身 + 左右空格, 优先空格<br><code>W</code>: 一个字串, 内部: 字串本身, 外部: 单词本身 + 左右空格, 优先空格<br><code>(</code>,<code>)</code>,<code>b</code>: 一对[],内部: 括号内部, 外部: 括号以及括号内部<br><code>[</code>,<code>]</code>: 一对[],内部: 括号内部, 外部: 括号以及括号内部<br><code>&#123;</code>,<code>&#125;</code>,<code>B</code>: 一对{},内部: 括号内部, 外部: 括号以及括号内部<br><code>&lt;</code>,<code>&gt;</code>: 一对&lt;&gt;,内部: 括号内部, 外部: 括号以及括号内部<br><code>t</code>: html 文本<br><code>&#39;</code>: 一对单引号,内部: 括号内部, 外部: 括号以及括号内部<br><code>&quot;</code>: 一对双引号,内部: 括号内部, 外部: 括号以及括号内部</p>
@@ -1172,187 +1322,6 @@
 
 
   
-    <article id="post-编译flink遇到的问题记录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/10/11/%E7%BC%96%E8%AF%91flink%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">编译flink遇到的问题记录</a>
-    </h1>
-  
-
-        
-        <a href="/2022/10/11/%E7%BC%96%E8%AF%91flink%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="archive-article-date">
-  	<time datetime="2022-10-11T04:09:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="编译flink遇到的问题记录"><a href="#编译flink遇到的问题记录" class="headerlink" title="编译flink遇到的问题记录"></a>编译flink遇到的问题记录</h1><p>今天编译flink遇到的几个问题简单的记录下。</p>
-<p>1.第一个问题<strong>Blocked mirror for repositories</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Could not resolve dependencies for project</span><br><span class="line">Could not transfer artifact</span><br><span class="line">Blocked mirror for repositories</span><br></pre></td></tr></table></figure>
-
-<p>我们maven3.8.1在以上版本默认会禁止非https的请求，我们需要降低版本，我使用了maven3.6.8版本</p>
-<p>2.第二个问题，maven的settings.xml,可以使用阿里的</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">id</span>&gt;</span>nexus-aliyun<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">name</span>&gt;</span>Nexus aliyun<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">scala</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">flink</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">实时计算</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/10/11/%E7%BC%96%E8%AF%91flink%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-通过aop注解实现防止重复提交" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/10/11/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E9%98%B2%E6%AD%A2%E9%87%8D%E5%A4%8D%E6%8F%90%E4%BA%A4/">通过aop注解实现防止重复提交</a>
-    </h1>
-  
-
-        
-        <a href="/2022/10/11/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E9%98%B2%E6%AD%A2%E9%87%8D%E5%A4%8D%E6%8F%90%E4%BA%A4/" class="archive-article-date">
-  	<time datetime="2022-10-11T01:57:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="通过aop注解实现防止重复提交"><a href="#通过aop注解实现防止重复提交" class="headerlink" title="通过aop注解实现防止重复提交"></a>通过aop注解实现防止重复提交</h1><p>通过注解和aop来实现，后端的重复提交校验</p>
-<h5 id="1-定义防止重复提交的注解"><a href="#1-定义防止重复提交的注解" class="headerlink" title="1.定义防止重复提交的注解"></a>1.定义防止重复提交的注解</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PreventDuplicateSubmissions &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 过期时间 */</span></span><br><span class="line">    <span class="type">long</span> <span class="title function_">expire</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-实现防止重复提交的拦截器"><a href="#2-实现防止重复提交的拦截器" class="headerlink" title="2.实现防止重复提交的拦截器"></a>2.实现防止重复提交的拦截器</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PreventDuplicateSubmissionsInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span> <span class="keyword">private</span> Cache cache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before(&quot;@annotation(preventDuplicateSubmissions)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">interceptor</span><span class="params">(PreventDuplicateSubmissions preventDuplicateSubmissions)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Long</span> <span class="variable">count</span> <span class="operator">=</span> cache.incr(getParams(), preventDuplicateSubmissions.expire());</span><br><span class="line">            <span class="comment">// 如果超过2或者设置的参数，则表示重复提交了</span></span><br><span class="line">            <span class="keyword">if</span> (count.intValue() &gt;= <span class="number">2</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.LIMIT_ERROR);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果参数为空，则表示用户未登录，直接略过，不做处理</span></span><br><span class="line">        <span class="keyword">catch</span> (NullPointerException ignored) &#123;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ServiceException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;防重复提交拦截器异常&quot;</span>, e);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ServiceException</span>(ResultCode.ERROR);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取表单参数</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String <span class="title function_">getParams</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">HttpServletRequest</span> <span class="variable">request</span> <span class="operator">=</span></span><br><span class="line">                ((ServletRequestAttributes)</span><br><span class="line">                                Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))</span><br><span class="line">                        .getRequest();</span><br><span class="line">        <span class="comment">// 请求地址</span></span><br><span class="line">        <span class="keyword">return</span> request.getRequestURI()</span><br><span class="line">                + Objects.requireNonNull(UserContext.getCurrentUser()).getId()</span><br><span class="line">                + UserContext.getCurrentUser().getUsername();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-具体的使用"><a href="#3-具体的使用" class="headerlink" title="3.具体的使用"></a>3.具体的使用</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PreventDuplicateSubmissions(expire = 5)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/retry&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">retry</span><span class="params">()</span> &#123;</span><br><span class="line">    log.info(<span class="string">&quot;aop执行&quot;</span>);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RetryException</span>(<span class="string">&quot;aop执行&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring boot</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/10/11/%E9%80%9A%E8%BF%87aop%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E9%98%B2%E6%AD%A2%E9%87%8D%E5%A4%8D%E6%8F%90%E4%BA%A4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next</a>
@@ -1459,15 +1428,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">跨端</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">lua</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">跨端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1512,6 +1481,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据质量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hive</a>
               </li>
              
               <li class="article-tag-list-item">
